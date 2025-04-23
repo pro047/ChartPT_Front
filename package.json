@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
@@ -17,9 +18,9 @@
     "zustand": "^5.0.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "jest",
     "eject": "react-scripts eject",
     "watch:json-server": "json-server db.json --port 5000",
     "watch:vite": "vite",
@@ -46,6 +47,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.1.2",
+    "jest": "^27.5.1",
     "json-server": "^1.0.0-beta.3",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.4"
