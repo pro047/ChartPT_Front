@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { logout } from '../service/auth/auth';
 import { therapistNameUpdate } from '../service/therapist/therapist';
 
 const Therapist = () => {
@@ -13,13 +11,6 @@ const Therapist = () => {
     const getNextId = localStorage.getItem('NextId');
     return getNextId !== null ? parseInt(getNextId, 10) : 1;
   });
-
-  const navigate = useNavigate();
-
-  const onClick = () => {
-    logout();
-    navigate('/');
-  };
 
   const onAddTodoList = () => {
     const lastItem = todoList[todoList.length - 1];
@@ -92,7 +83,6 @@ const Therapist = () => {
   return (
     <>
       <div>{therapistName} 치료사님 안녕하세요!</div>
-      <button onClick={onClick}>logout</button>
       <div>오늘 해야 할 일은 어떤건가요?</div>
       <ol>
         <div>

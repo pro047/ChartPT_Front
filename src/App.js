@@ -5,11 +5,15 @@ import Home from './pages/Home';
 import Patient from './pages/Patient';
 import Therapist from './pages/therapist';
 import Plan from './pages/Plan';
+import NavBar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import DefaultSidebar from './components/Sidebar';
 
 function App() {
   return (
     <>
       <BrowserRouter>
+        <NavBar />
         <Routes>
           <Route path='/' element={<Home />}></Route>
           <Route path='/login' element={<Login />}></Route>
@@ -18,6 +22,7 @@ function App() {
           <Route path='/patient' element={<Patient />}></Route>
           <Route path='/plan' element={<Plan />}></Route>
         </Routes>
+        <DefaultSidebar />
       </BrowserRouter>
     </>
   );
