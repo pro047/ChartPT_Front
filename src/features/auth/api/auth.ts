@@ -1,11 +1,11 @@
 import { Instance, useUserStore } from '@/shared';
-import { AxiosResponse, AxiosRequest } from '@/shared';
+import { LoginResponse, LoginRequest } from '@/shared';
 
 export const SignUp = async (
   email: string,
   password: string,
   name: string
-): Promise<AxiosResponse> => {
+): Promise<LoginResponse> => {
   const result = await Instance.post('/auth/signup', {
     email,
     password,
@@ -18,8 +18,8 @@ export const SignUp = async (
 export const login = async (
   email: string,
   password: string
-): Promise<AxiosResponse> => {
-  const result = await Instance.post<AxiosResponse>('/auth/login', {
+): Promise<LoginResponse> => {
+  const result = await Instance.post<LoginResponse>('/auth/login', {
     email,
     password,
   });
@@ -34,7 +34,7 @@ export const logout = async (): Promise<void> => {
   localStorage.removeItem('userInfo');
 };
 
-export const me = async (): Promise<AxiosRequest> => {
+export const me = async (): Promise<LoginRequest> => {
   const token = useUserStore.getState().token;
   const result = await Instance.get('/auth/me', {
     headers: { Authorization: `Bearer ${token}` },

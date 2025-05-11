@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
-import * as csrfToken from '@/features/auth/token/CsrfToken';
+import * as csrfToken from '@/shared';
 import { useUserStore } from '../store/userStore';
 
-const Url = import.meta.env.VITE_BASE_URL;
+const Url = process.env.NEXT_PUBLIC_API_URL;
 
 export const Instance: AxiosInstance = axios.create({
   baseURL: Url,
@@ -15,18 +15,25 @@ export const Instance: AxiosInstance = axios.create({
 Instance.interceptors.request.use(
   async (config) => {
     const token = await csrfToken.getCsrfToken();
-    const user: { token: string | null } = useUserStore.getState();
+    const user = useUserStore.getState();
+    console.log('[csrf Token]', token);
     console.log('[axios interceptor] 토큰', user);
-    if (user?.token) {
-      config.headers['chartpt-csrf-token'] = token;
-      config.headers['Authorization'] = `Bearer ${user.token}`;
-    } else {
-      console.error('no token');
+
+    if (config.url?.includes('/auth/login')) {
+      config.headers['Chartpt-Csrf-Token'] = token;
+      return config;
     }
 
+    if (!user?.token) {
+      console.warn('No user token');
+      return Promise.reject(new Error('No User Token'));
+    }
+
+    config.headers['Chartpt-Csrf-Token'] = token;
+    config.headers['Authorization'] = `Bearer ${user.token}`;
     return config;
   },
   (error) => {
-    Promise.reject(error);
+    return Promise.reject(error);
   }
 );

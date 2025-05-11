@@ -1,12 +1,14 @@
-import { useNavigate } from 'react-router-dom';
+'use client';
+
+import { useRouter } from 'next/navigation';
 
 export const HomeForm = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <>
       <div>Home</div>
-      <button onClick={() => navigate('/login')}>login</button>
+      <button onClick={() => router.push('/login')}>login</button>
     </>
   );
 };

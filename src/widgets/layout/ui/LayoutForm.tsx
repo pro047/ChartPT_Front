@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { NavBarForm } from '@/widgets/navbar/index';
 import { LayoutProps } from '../types';

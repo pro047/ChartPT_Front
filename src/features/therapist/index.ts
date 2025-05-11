@@ -1,1 +1,1 @@
-export * from './ui/TherapistForm';
+export * from './ui';

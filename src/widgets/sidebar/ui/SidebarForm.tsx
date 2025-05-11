@@ -1,13 +1,17 @@
+'use client';
+
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { groupedPatientByInitial } from '@/entities/patient/groupedPatient';
 import { SidebarProps } from '../types';
+import { usePatientStore } from '@/shared/store/patientStore';
 
 export const SidebarForm = ({ isOpen }: SidebarProps) => {
   const [openMenu, setOpenMenu] = useState<null | string>(null);
 
-  const patientGroup = groupedPatientByInitial();
+  const patientId = usePatientStore.getState().patientId;
+  const patientGroup = groupedPatientByInitial(patientId);
   const currInitial = Object.keys(patientGroup);
 
   const toggleMenu = (initial: string) => {
@@ -43,7 +47,7 @@ export const SidebarForm = ({ isOpen }: SidebarProps) => {
           >
             {patientGroup[initial].map((patient) => (
               <li key={patient.id}>
-                <Link>{patient.name}</Link>
+                <Link href={'/'}>{patient.name}</Link>
               </li>
             ))}
           </ul>

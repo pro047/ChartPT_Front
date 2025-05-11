@@ -2,20 +2,15 @@ import { useEffect, useState } from 'react';
 import { Item } from '../types/types';
 
 export const useTodoList = () => {
-  const [todoList, setTodoList] = useState(() => {
-    const getTodoList = localStorage.getItem('todoList');
-    return getTodoList ? JSON.parse(getTodoList) : [];
-  });
-  const [nextId, setNextid] = useState(() => {
-    const getNextId = localStorage.getItem('NextId');
-    return getNextId !== null ? parseInt(getNextId, 10) : 1;
-  });
+  const [todoList, setTodoList] = useState<Item[]>([]);
+  const [nextId, setNextid] = useState(1);
 
   useEffect(() => {
-    const getTodoList = localStorage.getItem('todoList');
-    if (getTodoList) {
-      setTodoList(JSON.parse(getTodoList));
-    }
+    const storedTodos = localStorage.getItem('todosList');
+
+    if (storedTodos) setTodoList(JSON.parse(storedTodos));
+    const id = parseInt(localStorage.getItem('NextId') || '1', 10);
+    setTodoList([{ id, text: '', done: false, confirm: false }]);
   }, []);
 
   useEffect(() => {

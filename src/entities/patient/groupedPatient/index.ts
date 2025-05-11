@@ -1,1 +1,1 @@
-export * from './groupedPatient';
+export * from './GroupedPatient';

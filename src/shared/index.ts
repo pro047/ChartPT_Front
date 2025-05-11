@@ -1,4 +1,3 @@
-export * from './api/axios';
-export * from './store/userStore';
-export * from './types/axiosTypes';
-export * from './types/storeTypes';
+export * from './api';
+export * from './store';
+export * from './types';

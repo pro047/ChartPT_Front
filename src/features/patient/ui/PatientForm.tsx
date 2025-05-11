@@ -1,10 +1,13 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 export const PatientForm = () => {
   return (
     <>
       <div>Patient</div>
-      <Link to='chart'>차트 만들기</Link>
+      <Link href='/patient/chart' replace>
+        차트 만들기
+      </Link>
+      <Link href='/evaluation'>평가</Link>
     </>
   );
 };

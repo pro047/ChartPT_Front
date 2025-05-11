@@ -1,29 +1,35 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { logout } from '@/features/auth/api/auth';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { SidebarForm } from '@/widgets/sidebar/index';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useUserStore } from '@/shared';
 
 export const NavBarForm = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLogged, setIsLogged] = useState(false);
+  const [hyerated, setHyerated] = useState(false);
 
-  const navigate = useNavigate();
+  const { token, clearUser } = useUserStore();
+  const router = useRouter();
 
   const onClickSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const onClickLogin = () => {
-    setIsLogged(true);
-    navigate('/login');
-  };
   const onClickLogout = () => {
-    setIsLogged(false);
-    console.log('islogged :', isLogged);
+    clearUser();
     logout();
-    navigate('/');
+    router.push('/');
   };
+
+  useEffect(() => {
+    setHyerated(true);
+  }, []);
+
+  if (!hyerated) return null;
 
   return (
     <header>
@@ -33,19 +39,19 @@ export const NavBarForm = () => {
         </button>
         <ol className='flex justify-between max-w-96'>
           <li className='mx-3'>
-            <Link to={'/therapist'}>Therapist</Link>
+            <Link href={'/therapist'}>Therapist</Link>
           </li>
           <li className='mx-3'>
-            <Link to={'/patient'}>Patient</Link>
+            <Link href={'/patient'}>Patient</Link>
           </li>
           <li className='mx-3'>
-            <Link to={'/plan'}>Plan</Link>
+            <Link href={'/plan'}>Plan</Link>
           </li>
         </ol>
-        {isLogged ? (
-          <button onClick={onClickLogin}>logout</button>
+        {token ? (
+          <button onClick={onClickLogout}>logout</button>
         ) : (
-          <button onClick={onClickLogout}>login</button>
+          <button onClick={() => router.push('/login')}>login</button>
         )}
       </nav>
       {isOpen && (

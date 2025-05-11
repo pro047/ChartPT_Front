@@ -1,8 +1,9 @@
+'use client';
+
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from 'react-router-dom';
-import { SignUp, setCsrfToken } from '@/features';
+import { useRouter } from 'next/navigation';
+import { SignUp } from '@/features';
 import { useUserStore, UserStore } from '@/shared';
 import { SignupSchemaType } from '../../types';
 import { SignupSchema } from '../../schema';
@@ -42,20 +43,16 @@ export const SignupForm = () => {
     },
   });
 
-  const setToken = useUserStore((state: UserStore) => state.setToken);
+  const setUser = useUserStore((state: UserStore) => state.setUser);
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const onSubmit = async (data: SignupSchemaType) => {
     const result = await SignUp(data.email, data.password, data.name);
     console.log('[signup] 받은 토큰 :', result.token);
-    setToken(result.token);
-    navigate('/login');
+    setUser(result.token, result.name);
+    router.push('/login');
   };
-
-  useEffect(() => {
-    setCsrfToken().then(console.log).catch(console.error);
-  }, []);
 
   const fields = [
     { id: 'email', type: 'text', label: 'Email', placeholder: 'Email' },

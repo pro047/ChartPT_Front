@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+'use client';
+
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { login } from '../../api/auth';
-import { setCsrfToken } from '../../token/CsrfToken';
 import { useUserStore, UserStore } from '@/shared';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const setUser = useUserStore((state: UserStore) => state.setUser);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('[onSubit ok]');
     try {
       const { token, name } = await login(email, password);
       console.log('[login] 받은 토큰 :', token);
-      console.log('[thera] 이름:', name);
+      console.log('[thera] 이름 :', name);
       setUser(token, name);
-      console.log('theraname!:', setUser(token, name));
-      navigate('/therapist');
+      console.log('[로그인결과] :', token, name);
+      router.push('/therapist');
     } catch (e) {
       console.error('login error', e);
     }
   };
-
-  useEffect(() => {
-    setCsrfToken().then(console.log).catch(console.error);
-  }, []);
 
   return (
     <form onSubmit={onSubmit}>
@@ -45,7 +45,7 @@ export const LoginForm = () => {
       />
       <button type='submit'>로그인</button>
       <button>
-        <Link to='/signup'>회원가입</Link>
+        <Link href='/signup'>회원가입</Link>
       </button>
     </form>
   );
