@@ -1,4 +1,4 @@
 export type Patients = {
-  id: number;
+  id?: number;
   name: string;
 };

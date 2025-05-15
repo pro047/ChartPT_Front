@@ -1,18 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
-import { groupedPatientByInitial } from '@/entities/patient/groupedPatient';
-import { SidebarProps } from '../types';
-import { usePatientStore } from '@/shared/store/patientStore';
+import { useMemo, useState } from 'react';
+import { SidebarProp } from '../types';
+import { useGroupedPatient } from '@/entities';
+import { PatientGroup } from './patientGroup';
 
-export const SidebarForm = ({ isOpen }: SidebarProps) => {
-  const [openMenu, setOpenMenu] = useState<null | string>(null);
+export const SidebarForm = ({ isOpen, setIsOpenAction }: SidebarProp) => {
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
 
-  const patientId = usePatientStore.getState().patientId;
-  const patientGroup = groupedPatientByInitial(patientId);
-  const currInitial = Object.keys(patientGroup);
+  const { data } = useGroupedPatient();
+
+  const sortedInitial = useMemo(() => Object.keys(data).sort(), [data]);
 
   const toggleMenu = (initial: string) => {
     setOpenMenu((prev) => (prev === initial ? null : initial));
@@ -27,32 +25,21 @@ export const SidebarForm = ({ isOpen }: SidebarProps) => {
       <div className='p-4 border-b border-gray-200 dark:border-gray-700'>
         <h1>Patient</h1>
       </div>
-      {currInitial.sort().map((initial) => (
-        <div key={initial}>
-          <button
-            onClick={() => toggleMenu(initial)}
-            className='w-full flex justify-between items-center'
-          >
-            <div>{initial}</div>
-            <div>
-              {openMenu === initial ? <BiChevronUp /> : <BiChevronDown />}
-            </div>
-          </button>
-          <ul
-            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              openMenu === initial
-                ? 'max-h-96 opacity-100'
-                : 'max-h-0 opacity-0'
-            }`}
-          >
-            {patientGroup[initial].map((patient) => (
-              <li key={patient.id}>
-                <Link href={'/'}>{patient.name}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+
+      {sortedInitial.length === 0 ? (
+        <div> 등록된 환자가 없습니다 </div>
+      ) : (
+        sortedInitial.map((initial) => (
+          <PatientGroup
+            key={initial}
+            initial={initial}
+            patients={data[initial]}
+            isOpen={openMenu === initial}
+            onToggle={() => toggleMenu(initial)}
+            onCloseSidebar={() => setIsOpenAction(false)}
+          />
+        ))
+      )}
     </aside>
   );
 };

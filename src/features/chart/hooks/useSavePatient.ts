@@ -1,3 +1,5 @@
+'use client';
+
 import { usePatientStore } from '@/shared/store/patientStore';
 import { ChartSchemaType, saveChart } from '../model';
 

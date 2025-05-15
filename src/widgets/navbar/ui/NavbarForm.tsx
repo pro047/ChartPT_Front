@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { logout } from '@/features/auth/api/auth';
-import { GiHamburgerMenu } from 'react-icons/gi';
-import { SidebarForm } from '@/widgets/sidebar/index';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useRouter } from 'next/navigation';
+import { logout } from '@/features/auth/api/auth';
+import { SidebarForm } from '@/widgets/sidebar/index';
 import { useUserStore } from '@/shared';
 
 export const NavBarForm = () => {
@@ -60,7 +60,7 @@ export const NavBarForm = () => {
           onClick={onClickSidebar}
         ></div>
       )}
-      <SidebarForm isOpen={isOpen} />
+      <SidebarForm isOpen={isOpen} setIsOpenAction={setIsOpen} />
     </header>
   );
 };

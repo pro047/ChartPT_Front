@@ -1,1 +1,2 @@
-export * from './SidebarType';
+export * from './patientGroupProps';
+export * from './sidebarProp';

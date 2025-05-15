@@ -7,6 +7,7 @@ export const saveChart = async (data: ChartSchemaType): Promise<number> => {
   return result.data.id;
 };
 
-// export const getChart = async () => {
-//   const result = await Instance.get('/patient/:id', data);
-// };
+export const getChart = async (id: number): Promise<ChartSchemaType> => {
+  const result = await Instance.get(`/patient/${id}/evaluation`);
+  return result.data;
+};

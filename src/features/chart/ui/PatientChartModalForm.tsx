@@ -3,8 +3,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { schema, ChartSchemaType, saveChart, FormFieldProps } from '../model';
+import { schema, ChartSchemaType, FormFieldProps } from '../model';
 import { useSavePatient } from '../hooks';
+import { useGroupedPatient } from '@/entities';
 
 const ChartField = <T extends Record<string, any>>({
   id,
@@ -33,14 +34,20 @@ export const PatientChartModalForm: React.FC = () => {
     formState: { errors },
   } = useForm<ChartSchemaType>({ resolver: zodResolver(schema) });
 
+  const savePatient = useSavePatient();
+  const { refetch } = useGroupedPatient();
   const router = useRouter();
 
   const onSubmit = async (formData: ChartSchemaType) => {
-    console.log('data', formData);
-    const savePatient = useSavePatient();
-    const patientId = await savePatient(formData);
-    console.log('patient Id:', patientId);
-    router.push(`/patient/${patientId}/evaluation`);
+    try {
+      console.log('data', formData);
+      const patientId = await savePatient(formData);
+      console.log('patient Id:', patientId);
+      await refetch();
+      router.push(`/patient/${patientId}/evaluation`);
+    } catch (err) {
+      console.error('error :', err);
+    }
   };
 
   const closeModal = () => {
