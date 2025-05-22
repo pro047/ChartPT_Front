@@ -1,16 +1,18 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { usePatientContext, PatientGroup } from '@/entities';
 import { SidebarProp } from '../types';
-import { useGroupedPatient } from '@/entities';
-import { PatientGroup } from './patientGroup';
 
 export const SidebarForm = ({ isOpen, setIsOpenAction }: SidebarProp) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
-  const { data } = useGroupedPatient();
+  const { groupedPatients } = usePatientContext();
 
-  const sortedInitial = useMemo(() => Object.keys(data).sort(), [data]);
+  const sortedInitial = useMemo(
+    () => Object.entries(groupedPatients).sort(),
+    [groupedPatients]
+  );
 
   const toggleMenu = (initial: string) => {
     setOpenMenu((prev) => (prev === initial ? null : initial));
@@ -29,11 +31,11 @@ export const SidebarForm = ({ isOpen, setIsOpenAction }: SidebarProp) => {
       {sortedInitial.length === 0 ? (
         <div> 등록된 환자가 없습니다 </div>
       ) : (
-        sortedInitial.map((initial) => (
+        sortedInitial.map(([initial, patients]) => (
           <PatientGroup
             key={initial}
             initial={initial}
-            patients={data[initial]}
+            patients={patients}
             isOpen={openMenu === initial}
             onToggle={() => toggleMenu(initial)}
             onCloseSidebar={() => setIsOpenAction(false)}

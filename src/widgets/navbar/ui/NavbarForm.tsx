@@ -1,23 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { GiHamburgerMenu } from 'react-icons/gi';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { logout } from '@/features/auth/api/auth';
-import { SidebarForm } from '@/widgets/sidebar/index';
+import { SidebarForm } from '@/widgets/';
+import { logout } from '@/features/';
+import { usePatientContext } from '@/entities';
 import { useUserStore } from '@/shared';
+import { useHydrated } from '../hooks';
 
 export const NavBarForm = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [hyerated, setHyerated] = useState(false);
-
   const { token, clearUser } = useUserStore();
   const router = useRouter();
-
-  const onClickSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+  const { isOpen, setIsOpen } = usePatientContext();
 
   const onClickLogout = () => {
     clearUser();
@@ -25,16 +20,13 @@ export const NavBarForm = () => {
     router.push('/');
   };
 
-  useEffect(() => {
-    setHyerated(true);
-  }, []);
-
-  if (!hyerated) return null;
+  const hydrated = useHydrated();
+  if (!hydrated) return null;
 
   return (
     <header>
       <nav className='flex justify-between w-screen p-3'>
-        <button className='w-8 h-6' onClick={onClickSidebar}>
+        <button className='w-8 h-6' onClick={() => setIsOpen(true)}>
           <GiHamburgerMenu />
         </button>
         <ol className='flex justify-between max-w-96'>
@@ -57,7 +49,7 @@ export const NavBarForm = () => {
       {isOpen && (
         <div
           className='fixed inset-0 bg-black opacity-30 z-40'
-          onClick={onClickSidebar}
+          onClick={() => setIsOpen(false)}
         ></div>
       )}
       <SidebarForm isOpen={isOpen} setIsOpenAction={setIsOpen} />

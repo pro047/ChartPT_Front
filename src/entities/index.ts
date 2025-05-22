@@ -1,1 +1,2 @@
-export * from './patient/hooks';
+export * from './patient';
+export * from './evaluation';

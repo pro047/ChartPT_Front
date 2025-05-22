@@ -1,8 +1,8 @@
-import { Patients } from '@/entities/patient/types';
+import { UserData } from './patientInfoTypes';
 
 export type PatientGroupProps = {
   initial: string;
-  patients?: Patients[];
+  patients?: UserData[];
   isOpen: boolean;
   onToggle: () => void;
   onCloseSidebar: () => void;

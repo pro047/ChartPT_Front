@@ -1,1 +1,1 @@
-export * from './getAllPatients';
+export * from './getPatientInfo';

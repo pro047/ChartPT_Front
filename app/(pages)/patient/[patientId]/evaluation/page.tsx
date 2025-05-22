@@ -1,7 +1,15 @@
 'use client';
 
-import React from 'react';
+import { EvaluationForm } from '@/entities';
+import { usePatientStore } from '@/shared';
+import { useEffect } from 'react';
 
 export default function EvaluationPage() {
-  return <div>Evaluation page</div>;
+  const setPatientId = usePatientStore((state) => state.setPatientId);
+
+  useEffect(() => {
+    const patientId = localStorage.getItem('patientId');
+    if (patientId) setPatientId(JSON.parse(patientId));
+  }, []);
+  return <EvaluationForm />;
 }

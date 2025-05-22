@@ -1,9 +1,9 @@
 'use client';
 
-import { PatientForm } from '@/features/patient';
-import { LayoutForm } from '@/widgets';
-import { usePathname } from 'next/navigation';
 import React from 'react';
+import { usePathname } from 'next/navigation';
+import { LayoutForm } from '@/widgets';
+import { PatientForm } from '@/features/patient';
 
 export default function PatientLayout({
   children,
@@ -12,8 +12,7 @@ export default function PatientLayout({
 }) {
   const pathname = usePathname();
 
-  const isEvaluationPage = pathname.includes('/evaluation');
-
+  const isEvaluationPage = /^\patient\/\d+/.test(pathname);
   return (
     <LayoutForm>
       {!isEvaluationPage && <PatientForm />}

@@ -5,7 +5,8 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { schema, ChartSchemaType, FormFieldProps } from '../model';
 import { useSavePatient } from '../hooks';
-import { useGroupedPatient } from '@/entities';
+import { usePatientContext } from '@/entities';
+import { useMemo } from 'react';
 
 const ChartField = <T extends Record<string, any>>({
   id,
@@ -21,7 +22,7 @@ const ChartField = <T extends Record<string, any>>({
       id={String(id)}
       type={type}
       placeholder={placeholder}
-      {...register(id)}
+      {...(register ? register(id) : {})}
     />
     {error && <p>{error}</p>}
   </div>
@@ -35,7 +36,7 @@ export const PatientChartModalForm: React.FC = () => {
   } = useForm<ChartSchemaType>({ resolver: zodResolver(schema) });
 
   const savePatient = useSavePatient();
-  const { refetch } = useGroupedPatient();
+  const { refetch } = usePatientContext();
   const router = useRouter();
 
   const onSubmit = async (formData: ChartSchemaType) => {
@@ -43,10 +44,11 @@ export const PatientChartModalForm: React.FC = () => {
       console.log('data', formData);
       const patientId = await savePatient(formData);
       console.log('patient Id:', patientId);
-      await refetch();
-      router.push(`/patient/${patientId}/evaluation`);
+      refetch();
+      router.push(`/patient/${patientId}`);
     } catch (err) {
-      console.error('error :', err);
+      console.error('[save patient chart error] :', err);
+      throw new Error('Failed save patient chart');
     }
   };
 
@@ -54,23 +56,21 @@ export const PatientChartModalForm: React.FC = () => {
     router.push('/patient');
   };
 
-  const fields = [
-    { id: 'name', label: '이름', placeholder: '이름' },
-    { id: 'age', label: '나이', type: 'number', placeholder: '나이' },
-    { id: 'gender', label: '성별', type: 'select', placeholder: '성별' },
-    {
-      id: 'firstVisit',
-      label: '첫 내원 날짜',
-      type: 'date',
-      placeholder: '첫 내원 날짜',
-    },
-    { id: 'occupation', label: '직업', placeholder: '직업' },
-  ] as const satisfies {
-    id: keyof ChartSchemaType;
-    label: string;
-    type?: string;
-    placeholder?: string;
-  }[];
+  const fields = useMemo<FormFieldProps<ChartSchemaType>[]>(
+    () => [
+      { id: 'name', label: '이름', placeholder: '이름' },
+      { id: 'age', label: '나이', type: 'number', placeholder: '나이' },
+      { id: 'gender', label: '성별', type: 'select', placeholder: '성별' },
+      {
+        id: 'firstVisit',
+        label: '첫 내원 날짜',
+        type: 'date',
+        placeholder: '첫 내원 날짜',
+      },
+      { id: 'occupation', label: '직업', placeholder: '직업' },
+    ],
+    []
+  );
 
   return (
     <div className='fixed inset-0 bg-black/40 flex items-center justify-center z-50'>

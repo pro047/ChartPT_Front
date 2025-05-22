@@ -5,6 +5,6 @@ export type FormFieldProps<T extends Record<string, any>> = {
   label: string;
   type?: string;
   placeholder?: string;
-  register: UseFormRegister<T>;
+  register?: UseFormRegister<T>;
   error?: string;
 };

@@ -1,7 +1,8 @@
 'use client';
 
 import { usePatientStore } from '@/shared/store/patientStore';
-import { ChartSchemaType, saveChart } from '../model';
+import { ChartSchemaType } from '../model';
+import { saveChart } from '../api';
 
 export const useSavePatient = () => {
   const setPatientId = usePatientStore((state) => state.setPatientId);

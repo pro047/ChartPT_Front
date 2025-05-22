@@ -1,6 +1,7 @@
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import { PatientGroupProps } from '../types';
+import { usePatientStore } from '@/shared';
 
 export const PatientGroup = ({
   initial,
@@ -10,6 +11,9 @@ export const PatientGroup = ({
   onCloseSidebar,
 }: PatientGroupProps) => {
   const router = useRouter();
+
+  const setPatientId = usePatientStore((state) => state.setPatientId);
+
   return (
     <div>
       <button
@@ -28,7 +32,11 @@ export const PatientGroup = ({
           <li key={patient.id}>
             <button
               onClick={() => {
-                router.push(`/patient/${patient.id}/evaluation`);
+                console.log('patient :', patient);
+                localStorage.setItem('patientInfo', JSON.stringify(patient));
+                localStorage.setItem('patientId', JSON.stringify(patient.id));
+                setPatientId(patient.id);
+                router.push(`/patient/${patient.id}`);
                 onCloseSidebar();
               }}
             >
