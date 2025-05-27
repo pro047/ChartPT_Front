@@ -1,4 +1,11 @@
+import { EvaluationType } from '@/entities';
+
 export type EvaluationStoreType = {
-  evaluationId: number | null;
-  setEvaluationId: (id: number) => void;
+  evaluationNumber: number | null;
+  evaluationInfo: EvaluationType | null;
+  evaluations: EvaluationType[];
+  setEvaluationNumber: (number: number) => void;
+  setEvaluationInfo: (info: EvaluationType) => void;
+  setEvaluations: (list: EvaluationType[]) => void;
+  clearEvaluation: () => void;
 };

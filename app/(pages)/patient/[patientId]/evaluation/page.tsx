@@ -1,15 +1,14 @@
 'use client';
 
-import { EvaluationForm } from '@/entities';
+import { EvaluationCreateForm } from '@/features';
 import { usePatientStore } from '@/shared';
-import { useEffect } from 'react';
 
-export default function EvaluationPage() {
-  const setPatientId = usePatientStore((state) => state.setPatientId);
+export default function EvaluationCreatePage() {
+  const patientId = usePatientStore((state) => state.patientId);
 
-  useEffect(() => {
-    const patientId = localStorage.getItem('patientId');
-    if (patientId) setPatientId(JSON.parse(patientId));
-  }, []);
-  return <EvaluationForm />;
+  if (!patientId) {
+    return <div>환자 정보가 없습니다</div>;
+  }
+
+  return <EvaluationCreateForm />;
 }

@@ -1,4 +1,4 @@
 export * from './loginType';
 export * from './userType';
-export * from './patientType';
+export * from './patientTypes';
 export * from './evaluaionType';

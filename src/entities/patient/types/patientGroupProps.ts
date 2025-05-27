@@ -1,9 +1,9 @@
-import { UserData } from './patientInfoTypes';
+import { PatientInfo } from '@/shared';
 
 export type PatientGroupProps = {
   initial: string;
-  patients?: UserData[];
+  patients?: PatientInfo[];
   isOpen: boolean;
-  onToggle: () => void;
-  onCloseSidebar: () => void;
+  onToggleAction: () => void;
+  onCloseSidebarAction: () => void;
 };

@@ -49,9 +49,10 @@ export const SignupForm = () => {
 
   const onSubmit = async (data: SignupSchemaType) => {
     const result = await SignUp(data.email, data.password, data.name);
+    console.log('result : ', result);
     console.log('[signup] 받은 토큰 :', result.token);
     setUser(result.token, result.name);
-    router.push('/login');
+    router.push('/');
   };
 
   const fields = [

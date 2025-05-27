@@ -8,7 +8,8 @@ export const HomeForm = () => {
   return (
     <>
       <div>Home</div>
-      <button onClick={() => router.push('/login')}>login</button>
+      <button onClick={() => router.push('/auth/login')}>login</button>
+      <button onClick={() => router.push('/auth/signup')}>signup</button>
     </>
   );
 };

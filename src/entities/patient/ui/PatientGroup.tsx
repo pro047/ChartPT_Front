@@ -1,23 +1,33 @@
+'use client';
+
 import { BiChevronDown, BiChevronUp } from 'react-icons/bi';
 import { useRouter } from 'next/navigation';
 import { PatientGroupProps } from '../types';
-import { usePatientStore } from '@/shared';
+import { PatientInfo, usePatientStore } from '@/shared';
 
 export const PatientGroup = ({
   initial,
   patients,
   isOpen,
-  onToggle,
-  onCloseSidebar,
+  onToggleAction,
+  onCloseSidebarAction,
 }: PatientGroupProps) => {
   const router = useRouter();
 
   const setPatientId = usePatientStore((state) => state.setPatientId);
+  const setPatient = usePatientStore((state) => state.setPatientInfo);
+
+  const handleClickPatient = (patient: PatientInfo) => {
+    setPatientId(patient.id);
+    setPatient(patient);
+    router.push(`/patient/${patient.id}`);
+    onCloseSidebarAction();
+  };
 
   return (
     <div>
       <button
-        onClick={onToggle}
+        onClick={onToggleAction}
         className='w-full flex justify-between items-center'
       >
         <div>{initial}</div>
@@ -32,12 +42,7 @@ export const PatientGroup = ({
           <li key={patient.id}>
             <button
               onClick={() => {
-                console.log('patient :', patient);
-                localStorage.setItem('patientInfo', JSON.stringify(patient));
-                localStorage.setItem('patientId', JSON.stringify(patient.id));
-                setPatientId(patient.id);
-                router.push(`/patient/${patient.id}`);
-                onCloseSidebar();
+                handleClickPatient(patient);
               }}
             >
               {patient.name}

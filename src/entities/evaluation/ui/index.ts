@@ -1,2 +1,2 @@
-export * from './EvalutionForm';
+export * from './EvaluationsInfoSection';
 export * from './DropDown';

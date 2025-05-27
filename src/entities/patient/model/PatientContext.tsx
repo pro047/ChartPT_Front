@@ -3,10 +3,10 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getAllPatients } from '../api';
 import { getInitialConsnant } from '../lib';
-import { UserData } from '../types';
+import { PatientInfo } from '@/shared';
 
 type PatientContextType = {
-  groupedPatients: Record<string, UserData[]>;
+  groupedPatients: Record<string, PatientInfo[]>;
   isLoading: boolean;
   isOpen: boolean;
   error: Error | null;
@@ -22,7 +22,7 @@ export const PatientProvider = ({
   children: React.ReactNode;
 }) => {
   const [groupedPatients, setGroupedPatients] = useState<
-    Record<string, UserData[]>
+    Record<string, PatientInfo[]>
   >({});
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setisLoading] = useState(true);
@@ -32,7 +32,7 @@ export const PatientProvider = ({
     try {
       const patients = await getAllPatients();
       console.log('patients :', patients);
-      const groupedPatient: Record<string, UserData[]> = {};
+      const groupedPatient: Record<string, PatientInfo[]> = {};
 
       patients.forEach((patient) => {
         const initial = getInitialConsnant(patient.name);

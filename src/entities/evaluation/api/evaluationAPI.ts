@@ -1,25 +1,39 @@
-import { Instance } from '@/shared';
 import { EvaluationType } from '../types';
+import { Instance, PatientInfo } from '@/shared';
 
-export const saveEvaluation = async (data: EvaluationType): Promise<number> => {
+type EvaluationApiResponse = {
+  messege: string;
+  patient: PatientInfo;
+  evaluations: EvaluationType[];
+};
+
+export const getAllEvaluationByPatientId = async (
+  patientId: number
+): Promise<EvaluationApiResponse> => {
+  if (!patientId) throw new Error('환자 ID를 찾을 수 없습니다');
+
   try {
-    let id = data.id;
-
-    if (id === undefined) {
-      const stored = localStorage.getItem('patientId');
-      if (!stored) {
-        throw new Error('환자 ID를 찾을 수 없습니다');
-      }
-      id = JSON.parse(stored);
-    }
-
-    const result = await Instance.post(`/patient/${id}/evaluation`, data);
-    console.log('[saveEval data] :', result);
-    return result.data.id;
+    const result = await Instance.get(`/patient/${patientId}`);
+    console.log('[getEval data] :', result);
+    return result.data;
   } catch (err) {
-    console.error('[saveEval error] :', err);
-    throw new Error('평가 저장 실패');
+    console.error('[getEval error] :', err);
+    throw new Error('평가 조회 실패');
   }
 };
 
-export const getEvaluation = async () => {};
+export const getEvaluationByPateintIdAndEvaluationNumber = async (
+  patientId: number,
+  evaluationNumber: number
+): Promise<EvaluationType> => {
+  try {
+    const result = await Instance.get(
+      `/patient/${patientId}/evaluation/${evaluationNumber}`
+    );
+    console.log('[getEval by eval] :', result.data.evaluation);
+    return result.data.evaluation;
+  } catch (err) {
+    console.error('[getEval by eval number error] :', err);
+    throw new Error('평가 번호로 조회 실패');
+  }
+};

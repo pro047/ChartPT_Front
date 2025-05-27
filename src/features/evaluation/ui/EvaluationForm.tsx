@@ -2,12 +2,17 @@
 
 import React, { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { EvaluationType, EvlauationFormFieldProps } from '../types';
-import { EvalautionSchema } from '../schema';
-import { useSaveEvaluation } from '../hooks/useSaveEvaluation';
-import { usePatientStore } from '@/shared';
+import {
+  EvaluationType,
+  EvaluationFormFieldProps,
+  EvalautionSchema,
+} from '@/entities';
+
+type EvaluationUpdateType = {
+  initialData?: EvaluationType;
+  onSubmitAction: (data: EvaluationType) => Promise<void>;
+};
 
 const EvaluationField = <T extends Record<string, any>>({
   id,
@@ -16,7 +21,7 @@ const EvaluationField = <T extends Record<string, any>>({
   register,
   placeholder,
   error,
-}: EvlauationFormFieldProps<T>) => (
+}: EvaluationFormFieldProps<T>) => (
   <div>
     <label htmlFor={String(id)}>{label}</label>
     <input
@@ -29,29 +34,20 @@ const EvaluationField = <T extends Record<string, any>>({
   </div>
 );
 
-export const EvaluationForm: React.FC = () => {
+export const EvaluationForm: React.FC<EvaluationUpdateType> = ({
+  initialData,
+  onSubmitAction,
+}) => {
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<EvaluationType>({ resolver: zodResolver(EvalautionSchema) });
+  } = useForm<EvaluationType>({
+    resolver: zodResolver(EvalautionSchema),
+    defaultValues: initialData,
+  });
 
-  const saveEvaluation = useSaveEvaluation();
-  const router = useRouter();
-
-  const onSubmit = async (formData: EvaluationType) => {
-    try {
-      const patientId = usePatientStore.getState().patientId;
-      console.log('evaluation form patientid :', patientId);
-      await saveEvaluation(formData);
-      router.push(`/patient/${patientId}`);
-    } catch (err) {
-      console.error('[save evaluation error] :', err);
-      throw new Error('Failed save Evaluation');
-    }
-  };
-
-  const fields = useMemo<EvlauationFormFieldProps<EvaluationType>[]>(
+  const fields = useMemo<EvaluationFormFieldProps<EvaluationType>[]>(
     () => [
       { id: 'region', label: 'Region', placeholder: 'Regoin' },
       { id: 'action', label: 'Action', placeholder: 'Action' },
@@ -65,7 +61,7 @@ export const EvaluationForm: React.FC = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmitAction)}>
         {fields.map((field) => {
           const { id, label, placeholder } = field;
           const type = 'type' in field ? field.type : 'text';

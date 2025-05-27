@@ -12,7 +12,7 @@ export default function PatientLayout({
 }) {
   const pathname = usePathname();
 
-  const isEvaluationPage = /^\patient\/\d+/.test(pathname);
+  const isEvaluationPage = /^\/patient\/\d+/.test(pathname);
   return (
     <LayoutForm>
       {!isEvaluationPage && <PatientForm />}

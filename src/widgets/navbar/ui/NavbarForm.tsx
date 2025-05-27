@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation';
 import { SidebarForm } from '@/widgets/';
 import { logout } from '@/features/';
 import { usePatientContext } from '@/entities';
-import { useUserStore } from '@/shared';
-import { useHydrated } from '../hooks';
+import { useUserStore, useHydrated } from '@/shared';
 
 export const NavBarForm = () => {
   const { token, clearUser } = useUserStore();
-  const router = useRouter();
   const { isOpen, setIsOpen } = usePatientContext();
+
+  const router = useRouter();
 
   const onClickLogout = () => {
     clearUser();
@@ -40,11 +40,9 @@ export const NavBarForm = () => {
             <Link href={'/plan'}>Plan</Link>
           </li>
         </ol>
-        {token ? (
-          <button onClick={onClickLogout}>logout</button>
-        ) : (
-          <button onClick={() => router.push('/login')}>login</button>
-        )}
+        <button onClick={token ? onClickLogout : () => router.push('/login')}>
+          {token ? 'logout' : 'login'}
+        </button>
       </nav>
       {isOpen && (
         <div

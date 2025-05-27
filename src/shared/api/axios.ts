@@ -19,7 +19,10 @@ Instance.interceptors.request.use(
     console.log('[csrf Token]', token);
     console.log('[axios interceptor] 토큰', user);
 
-    if (config.url?.includes('/auth/login')) {
+    if (
+      config.url?.includes('/auth/login') ||
+      config.url?.includes('/auth/signup')
+    ) {
       config.headers['Chartpt-Csrf-Token'] = token;
       return config;
     }

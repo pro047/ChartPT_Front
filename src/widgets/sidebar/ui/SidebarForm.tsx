@@ -37,8 +37,8 @@ export const SidebarForm = ({ isOpen, setIsOpenAction }: SidebarProp) => {
             initial={initial}
             patients={patients}
             isOpen={openMenu === initial}
-            onToggle={() => toggleMenu(initial)}
-            onCloseSidebar={() => setIsOpenAction(false)}
+            onToggleAction={() => toggleMenu(initial)}
+            onCloseSidebarAction={() => setIsOpenAction(false)}
           />
         ))
       )}

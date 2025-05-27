@@ -1,8 +1,7 @@
-import { Instance } from '@/shared';
-import { UserData } from '../types';
+import { Instance, PatientInfo } from '@/shared';
 import { usePatientStore } from '@/shared/store/patientStore';
 
-export const getAllPatients = async (): Promise<UserData[]> => {
+export const getAllPatients = async (): Promise<PatientInfo[]> => {
   try {
     const result = await Instance.get('/patient/patients');
     if (!result?.data.patients) {
@@ -15,7 +14,7 @@ export const getAllPatients = async (): Promise<UserData[]> => {
   }
 };
 
-export const getPatientInfoById = async (): Promise<UserData[]> => {
+export const getPatientInfoById = async (): Promise<PatientInfo[]> => {
   try {
     const patientId = usePatientStore.getState().patientId;
     const result = await Instance.get(`patient/${patientId}/evaluation`);

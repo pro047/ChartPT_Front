@@ -1,20 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { usePatientStore } from '@/shared';
 
 export const PatientInfoSection = () => {
-  const [patient, setPatient] = useState<any>(null);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('patientInfo');
-    if (stored) {
-      try {
-        setPatient(JSON.parse(stored));
-      } catch (err) {
-        console.error('Invalid patient data in localstorage');
-      }
-    }
-  }, []);
+  const patient = usePatientStore((state) => state.patientInfo);
 
   if (!patient) return <div>환자 정보가 없습니다</div>;
 
