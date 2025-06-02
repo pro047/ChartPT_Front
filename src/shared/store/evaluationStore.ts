@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { EvaluationStoreType } from '../types';
 import { persist } from 'zustand/middleware';
+import { EvaluationStoreType } from '../types';
 import { encryptedStorage } from '../utils';
 
 export const useEvaluationStore = create<EvaluationStoreType>()(
@@ -9,7 +9,7 @@ export const useEvaluationStore = create<EvaluationStoreType>()(
       evaluationNumber: null,
       evaluationInfo: null,
       evaluations: [],
-      setEvaluationNumber: (number) => set({ evaluationNumber: number }),
+      setEvaluationNumber: (value) => set({ evaluationNumber: value }),
       setEvaluationInfo: (info) => set({ evaluationInfo: info }),
       setEvaluations: (list) => set({ evaluations: list }),
       clearEvaluation: () =>

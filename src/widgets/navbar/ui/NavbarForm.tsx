@@ -20,9 +20,6 @@ export const NavBarForm = () => {
     router.push('/');
   };
 
-  const hydrated = useHydrated();
-  if (!hydrated) return null;
-
   return (
     <header>
       <nav className='flex justify-between w-screen p-3'>
@@ -31,13 +28,13 @@ export const NavBarForm = () => {
         </button>
         <ol className='flex justify-between max-w-96'>
           <li className='mx-3'>
-            <Link href={'/therapist'}>Therapist</Link>
+            <Link href={'/therapist'}>home</Link>
           </li>
           <li className='mx-3'>
             <Link href={'/patient'}>Patient</Link>
           </li>
           <li className='mx-3'>
-            <Link href={'/plan'}>Plan</Link>
+            <Link href={'/plan'}>therapist</Link>
           </li>
         </ol>
         <button onClick={token ? onClickLogout : () => router.push('/login')}>

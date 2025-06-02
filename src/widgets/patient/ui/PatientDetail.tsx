@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { DropDown, PatientInfoSection } from '@/entities';
+import { EvaluationDropDown, PlanDropDown } from '@/features';
+import { PatientInfoSection } from '@/entities';
 import { useHydrated, usePatientStore } from '@/shared';
 
 export const PatientDetailWidget = () => {
@@ -11,8 +12,10 @@ export const PatientDetailWidget = () => {
   return (
     <>
       <PatientInfoSection />
-      <DropDown />
+      <EvaluationDropDown />
+      <PlanDropDown />
       <Link href={`/patient/${patientId}/evaluation`}>평가 추가</Link>
+      <Link href={`/patient/${patientId}/plan`}>계획 추가</Link>
     </>
   );
 };

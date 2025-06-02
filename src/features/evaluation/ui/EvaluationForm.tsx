@@ -3,11 +3,8 @@
 import React, { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  EvaluationType,
-  EvaluationFormFieldProps,
-  EvalautionSchema,
-} from '@/entities';
+import { EvaluationType, EvalautionSchema } from '@/entities';
+import { FormFieldProps } from '@/shared';
 
 type EvaluationUpdateType = {
   initialData?: EvaluationType;
@@ -21,7 +18,7 @@ const EvaluationField = <T extends Record<string, any>>({
   register,
   placeholder,
   error,
-}: EvaluationFormFieldProps<T>) => (
+}: FormFieldProps<T>) => (
   <div>
     <label htmlFor={String(id)}>{label}</label>
     <input
@@ -47,7 +44,7 @@ export const EvaluationForm: React.FC<EvaluationUpdateType> = ({
     defaultValues: initialData,
   });
 
-  const fields = useMemo<EvaluationFormFieldProps<EvaluationType>[]>(
+  const fields = useMemo<FormFieldProps<EvaluationType>[]>(
     () => [
       { id: 'region', label: 'Region', placeholder: 'Regoin' },
       { id: 'action', label: 'Action', placeholder: 'Action' },

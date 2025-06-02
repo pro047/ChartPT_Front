@@ -3,3 +3,4 @@ export * from './navbar';
 export * from './sidebar';
 export * from './patient';
 export * from './evaluation';
+export * from './plan';

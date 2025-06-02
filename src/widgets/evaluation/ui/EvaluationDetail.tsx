@@ -12,6 +12,7 @@ import {
 import { deleteEvaluation } from '@/features';
 
 export const EvaluationDetailWidget = () => {
+  const router = useRouter();
   const hydrated = useHydrated();
   const patientId = usePatientStore((state) => state.patientId);
   const evaluationNumber = useEvaluationStore(
@@ -19,8 +20,6 @@ export const EvaluationDetailWidget = () => {
   );
 
   if (!hydrated || !patientId || !evaluationNumber) return null;
-
-  const router = useRouter();
 
   const handleDelete = async () => {
     await deleteEvaluation(patientId, evaluationNumber);
