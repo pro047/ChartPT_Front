@@ -13,9 +13,11 @@ export const EvaluationCreateForm = () => {
   const onCreateSubmit = async (formData: EvaluationType) => {
     try {
       const patientId = usePatientStore.getState().patientId;
-      const evaluationNumber = await saveEvaluation(formData);
       console.log('evaluation form patientid :', patientId);
+
+      const evaluationNumber = await saveEvaluation(formData);
       console.log('evaluation form evaluationNumber :', evaluationNumber);
+
       useEvaluationStore.getState().setEvaluationInfo(formData);
       useEvaluationStore.getState().setEvaluationNumber(evaluationNumber);
       router.push(`/patient/${patientId}/evaluation/${evaluationNumber}`);

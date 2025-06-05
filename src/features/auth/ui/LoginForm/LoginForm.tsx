@@ -22,7 +22,7 @@ export const LoginForm = () => {
       console.log('[thera] 이름 :', name);
       setUser(token, name);
       console.log('[로그인결과] :', token, name);
-      router.push('/therapist');
+      router.push('/dashboard');
     } catch (e) {
       console.error('login error', e);
     }

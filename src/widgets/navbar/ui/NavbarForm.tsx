@@ -2,17 +2,20 @@
 
 import { GiHamburgerMenu } from 'react-icons/gi';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { SidebarForm } from '@/widgets/';
 import { logout } from '@/features/';
 import { usePatientContext } from '@/entities';
-import { useUserStore, useHydrated } from '@/shared';
+import { useUserStore } from '@/shared';
 
 export const NavBarForm = () => {
   const { token, clearUser } = useUserStore();
   const { isOpen, setIsOpen } = usePatientContext();
 
   const router = useRouter();
+  const pathName = usePathname();
+
+  const isPatientPage = pathName.startsWith('/patient');
 
   const onClickLogout = () => {
     clearUser();
@@ -23,12 +26,14 @@ export const NavBarForm = () => {
   return (
     <header>
       <nav className='flex justify-between w-screen p-3'>
-        <button className='w-8 h-6' onClick={() => setIsOpen(true)}>
-          <GiHamburgerMenu />
-        </button>
+        {isPatientPage && (
+          <button className='w-8 h-6' onClick={() => setIsOpen(true)}>
+            <GiHamburgerMenu />
+          </button>
+        )}
         <ol className='flex justify-between max-w-96'>
           <li className='mx-3'>
-            <Link href={'/therapist'}>home</Link>
+            <Link href={'/dashboard'}>home</Link>
           </li>
           <li className='mx-3'>
             <Link href={'/patient'}>Patient</Link>

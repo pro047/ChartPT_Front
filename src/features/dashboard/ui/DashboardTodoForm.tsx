@@ -4,7 +4,7 @@ import { useUserStore } from '@/shared';
 import { useTodoList } from '../hooks/useTodoList';
 import { Item } from '../types/types';
 
-export const TherapistForm = () => {
+export const TodoForm = () => {
   const {
     todoList,
     onAddTodoList,
