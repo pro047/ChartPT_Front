@@ -5,3 +5,4 @@ export * from './patient';
 export * from './plan';
 export * from './dashboard';
 export * from './evaluation';
+export * from './more';

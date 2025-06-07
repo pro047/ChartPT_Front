@@ -3,14 +3,9 @@
 import { useRouter } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
 import { getAllEvaluationByPatientId, EvaluationType } from '@/entities';
-import {
-  Dropdown,
-  useEvaluationStore,
-  useHydrated,
-  usePatientStore,
-} from '@/shared';
+import { Dropdown, useEvaluationStore, useHydrated } from '@/shared';
 
-export const EvaluationDropDown = () => {
+export const EvaluationDropDown = ({ patientId }: { patientId: number }) => {
   const [evaluations, setEvaluations] = useState<EvaluationType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -18,7 +13,6 @@ export const EvaluationDropDown = () => {
   const router = useRouter();
   const hydrated = useHydrated();
 
-  const patientId = usePatientStore((state) => state.patientId);
   const selectedEvaluationNumber = useEvaluationStore(
     (state) => state.evaluationNumber
   );

@@ -26,7 +26,6 @@ export const PatientChartProvider = ({
   const close = () => setIsOpen(false);
   const triggerRefresh = () => setShouldRefresh((prev) => !prev);
 
-  console.log('is open :', isOpen);
   return (
     <PatietChartContext.Provider
       value={{ isOpen, open, close, triggerRefresh, shouldRefresh }}

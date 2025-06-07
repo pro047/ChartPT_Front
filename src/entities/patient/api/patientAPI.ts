@@ -1,5 +1,4 @@
 import { Instance, PatientInfo } from '@/shared';
-import { usePatientStore } from '@/shared/store/patientStore';
 
 export const getAllPatients = async (): Promise<PatientInfo[]> => {
   try {
@@ -14,14 +13,15 @@ export const getAllPatients = async (): Promise<PatientInfo[]> => {
   }
 };
 
-export const getPatientInfoById = async (): Promise<PatientInfo[]> => {
+export const getPatientInfoById = async (
+  patientId: number
+): Promise<PatientInfo> => {
   try {
-    const patientId = usePatientStore.getState().patientId;
-    const result = await Instance.get(`patient/${patientId}/evaluation`);
-    if (!result?.data.patientChart) {
+    const result = await Instance.get(`patient/${patientId}`);
+    if (!result?.data.patient) {
       throw new Error('No patientchart data');
     }
-    return result.data.patientChart;
+    return result.data.patient;
   } catch (err) {
     console.error(err);
     throw new Error('Failed fetch patientchart data');

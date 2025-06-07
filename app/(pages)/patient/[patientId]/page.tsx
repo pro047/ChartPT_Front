@@ -2,7 +2,14 @@
 
 import React from 'react';
 import { PatientDetailWidget } from '@/widgets/patient';
+import { useParams } from 'next/navigation';
 
 export default function PatientDetailPage() {
-  return <PatientDetailWidget />;
+  const { patientId } = useParams();
+
+  console.log('page patientID :', patientId);
+
+  if (!patientId) return null;
+
+  return <PatientDetailWidget patientId={Number(patientId)} />;
 }

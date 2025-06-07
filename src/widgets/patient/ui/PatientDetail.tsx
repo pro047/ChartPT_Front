@@ -1,18 +1,23 @@
+'use client';
+
 import Link from 'next/link';
 import { EvaluationDropDown, PlanDropDown } from '@/features';
 import { PatientInfoSection } from '@/entities';
-import { useHydrated, usePatientStore } from '@/shared';
+import { useHydrated } from '@/shared';
+import { EvaluationsChart } from '@/entities/evaluation/ui/chart';
 
-export const PatientDetailWidget = () => {
+export const PatientDetailWidget = ({ patientId }: { patientId: number }) => {
   const hydrated = useHydrated();
-  const patientId = usePatientStore.getState().patientId;
+
+  console.log('patientID :', typeof patientId);
 
   if (!hydrated || !patientId) return null;
 
   return (
     <>
-      <PatientInfoSection />
-      <EvaluationDropDown />
+      <PatientInfoSection patientId={patientId} />
+      <EvaluationsChart patientId={patientId} />
+      <EvaluationDropDown patientId={patientId} />
       <PlanDropDown />
       <Link href={`/patient/${patientId}/evaluation`}>평가 추가</Link>
       <Link href={`/patient/${patientId}/plan`}>계획 추가</Link>

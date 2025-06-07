@@ -2,26 +2,19 @@
 
 import { GiHamburgerMenu } from 'react-icons/gi';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { SidebarForm } from '@/widgets/';
-import { logout } from '@/features/';
 import { usePatientContext } from '@/entities';
 import { useUserStore } from '@/shared';
+import { MoreDropdown } from '@/features';
 
 export const NavBarForm = () => {
-  const { token, clearUser } = useUserStore();
+  const { token } = useUserStore();
   const { isOpen, setIsOpen } = usePatientContext();
 
-  const router = useRouter();
   const pathName = usePathname();
 
   const isPatientPage = pathName.startsWith('/patient');
-
-  const onClickLogout = () => {
-    clearUser();
-    logout();
-    router.push('/');
-  };
 
   return (
     <header>
@@ -38,13 +31,8 @@ export const NavBarForm = () => {
           <li className='mx-3'>
             <Link href={'/patient'}>Patient</Link>
           </li>
-          <li className='mx-3'>
-            <Link href={'/plan'}>therapist</Link>
-          </li>
         </ol>
-        <button onClick={token ? onClickLogout : () => router.push('/login')}>
-          {token ? 'logout' : 'login'}
-        </button>
+        {token ? <MoreDropdown /> : <button>login</button>}
       </nav>
       {isOpen && (
         <div
@@ -56,3 +44,7 @@ export const NavBarForm = () => {
     </header>
   );
 };
+
+// <button onClick={token ? onClickLogout : () => router.push('/login')}>
+//           {token ? 'logout' : 'login'}
+//         </button>

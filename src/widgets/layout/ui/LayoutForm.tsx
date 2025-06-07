@@ -5,7 +5,9 @@ import { NavBarForm } from '@/widgets';
 import { PatientProvider } from '@/entities';
 import { PatientChartProvider } from '@/features';
 import { useHydrated } from '@/shared';
-import { LayoutProps } from '../types';
+export type LayoutProps = {
+  children: React.ReactNode;
+};
 
 export const LayoutForm: React.FC<LayoutProps> = ({ children }) => {
   const hydrated = useHydrated();

@@ -2,7 +2,11 @@
 
 import { useMemo, useState } from 'react';
 import { usePatientContext, PatientGroup } from '@/entities';
-import { SidebarProp } from '../types';
+
+export type SidebarProp = {
+  isOpen: boolean;
+  setIsOpenAction: (value: boolean) => void;
+};
 
 export const SidebarForm = ({ isOpen, setIsOpenAction }: SidebarProp) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
