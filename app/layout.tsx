@@ -1,6 +1,7 @@
 import React from 'react';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
+import { ThemeProvider } from '@/shared';
 
 export default function RootLayout({
   children,
@@ -10,8 +11,10 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body>
-        {children}
-        <Toaster />
+        <ThemeProvider>
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

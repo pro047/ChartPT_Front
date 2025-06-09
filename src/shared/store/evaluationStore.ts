@@ -12,8 +12,10 @@ export const useEvaluationStore = create<EvaluationStoreType>()(
       setEvaluationNumber: (value) => set({ evaluationNumber: value }),
       setEvaluationInfo: (info) => set({ evaluationInfo: info }),
       setEvaluations: (list) => set({ evaluations: list }),
-      clearEvaluation: () =>
+      clearEvaluation: () => {
         set({ evaluationNumber: null, evaluationInfo: null }),
+          encryptedStorage?.removeItem('evaluationStorage');
+      },
     }),
     {
       name: 'evaluationStorage',

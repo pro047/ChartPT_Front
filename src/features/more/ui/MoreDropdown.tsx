@@ -1,14 +1,21 @@
 'use client';
 
+import { usePatientChartContext } from '@/features/chart';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { RiAccountCircleLine } from 'react-icons/ri';
+import { LogoutCheckModal } from './LogoutCheckModal';
+import { DarkModeToggleButton } from '../component';
 
 export const MoreDropdown = () => {
   const [openMenu, setOpenMenu] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
+
+  const { close } = usePatientChartContext();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -43,16 +50,25 @@ export const MoreDropdown = () => {
           >
             프로필
           </div>
+          <DarkModeToggleButton />
           <div
             className='px-4 py-2 hover:bg-gray-100 cursor-pointer'
             onClick={() => {
-              console.log('로그아웃 클릭');
               setOpenMenu(false);
+              setShowModal(true);
             }}
           >
             로그아웃
           </div>
         </div>
+      )}
+      {showModal && (
+        <LogoutCheckModal
+          closeAction={() => {
+            setShowModal(false);
+            close();
+          }}
+        />
       )}
     </div>
   );

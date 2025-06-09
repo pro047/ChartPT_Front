@@ -1,10 +1,9 @@
-import { UserProfile } from '@/entities';
-import { LayoutForm } from '@/widgets';
+import { LayoutForm, UserProfileWidget } from '@/widgets';
 
 export default function UserPage() {
   return (
     <LayoutForm>
-      <UserProfile />
+      <UserProfileWidget />
     </LayoutForm>
   );
 }

@@ -29,7 +29,7 @@ export const EvaluationDetailWidget = () => {
   return (
     <>
       <div>{evaluationNumber} 회차</div>
-      <PatientInfoSection />
+      <PatientInfoSection patientId={patientId} />
       <EvaluationInfoSection />
       <Link href={`/patient/${patientId}/evaluation`}>평가 추가</Link>
       <Link href={`/patient/${patientId}/evaluation/${evaluationNumber}/edit`}>

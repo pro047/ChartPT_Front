@@ -4,12 +4,12 @@ import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { usePathname } from 'next/navigation';
 import { chartSchema, ChartSchemaType, FormFieldProps } from '../types';
 import { useSavePatient } from '../hooks';
-import { usePatientContext } from '@/entities';
 import { usePatientChartContext } from '../model';
-import { usePathname } from 'next/navigation';
 import { PatientChartSuccessModal } from './PatientChartSuccessModal';
+import { usePatientContext } from '@/entities';
 import { usePatientStore } from '@/shared';
 
 const ChartField = <T extends Record<string, any>>({
@@ -49,13 +49,15 @@ export const PatientChartModalForm: React.FC = () => {
   const onSubmit = async (formData: ChartSchemaType) => {
     try {
       const patientId = await savePatient(formData);
+      setNewPatientId(patientId);
+      setCompleteOpen(true);
       refetch();
       triggerRefresh();
 
       if (pathname == '/dashboard') {
         usePatientStore.getState().setPatientId(patientId);
-        setNewPatientId(patientId);
-        setCompleteOpen(true);
+        refetch();
+        triggerRefresh();
       }
     } catch (err) {
       console.error('[save patient chart error] :', err);

@@ -10,7 +10,10 @@ export const usePatientStore = create<PatientStore>()(
       patientInfo: null,
       setPatientId: (id) => set({ patientId: id }),
       setPatientInfo: (info) => set({ patientInfo: info }),
-      clearPatient: () => ({ patientId: null, patientInfo: null }),
+      clearPatient: () => {
+        set({ patientId: null, patientInfo: null }),
+          encryptedStorage?.removeItem('patientStorage');
+      },
     }),
     { name: 'patientStorage', storage: encryptedStorage }
   )

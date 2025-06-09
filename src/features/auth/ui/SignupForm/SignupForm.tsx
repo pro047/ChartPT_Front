@@ -5,9 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { SignUp } from '@/features';
 import { useUserStore, UserStore } from '@/shared';
-import { SignupSchemaType } from '../../types';
-import { SignupSchema } from '../../schema';
-import { SignupFieldProps } from '../../types/SignupType';
+import { SignupSchema, SignupType, SignupFieldProps } from '../../types';
+import toast from 'react-hot-toast';
 
 const SignupField = <T extends Record<string, any>>({
   id,
@@ -34,12 +33,13 @@ export const SignupForm = () => {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<SignupSchemaType>({
+  } = useForm<SignupType>({
     resolver: zodResolver(SignupSchema),
     defaultValues: {
       email: '',
       password: '',
       name: '',
+      hospital: '',
     },
   });
 
@@ -47,12 +47,34 @@ export const SignupForm = () => {
 
   const router = useRouter();
 
-  const onSubmit = async (data: SignupSchemaType) => {
-    const result = await SignUp(data.email, data.password, data.name);
-    console.log('result : ', result);
-    console.log('[signup] 받은 토큰 :', result.token);
-    setUser(result.token, result.name);
-    router.push('/');
+  const onSubmit = async (data: SignupType) => {
+    try {
+      const result = await SignUp(
+        data.email,
+        data.password,
+        data.name,
+        data.hospital
+      );
+      console.log('result : ', result);
+      console.log('[signup] 받은 토큰 :', result.token);
+      setUser(
+        result.userId,
+        result.token,
+        result.name,
+        result.email,
+        result.hospital
+      );
+      router.push('/');
+    } catch (err: any) {
+      console.error('signup error', err);
+
+      if (err?.response?.status === 409) {
+        toast.error('이미 있는 아이디 입니다');
+        //todo: 중복 검사 버튼 만들기
+      } else {
+        toast.error('회원가입 중 오류가 발생했습니다');
+      }
+    }
   };
 
   const fields = [
@@ -70,8 +92,14 @@ export const SignupForm = () => {
       placeholder: 'PasswordCheck',
     },
     { id: 'name', type: 'text', label: 'Name', placeholder: 'Name' },
+    {
+      id: 'hospital',
+      type: 'text',
+      label: 'hospital',
+      placeholder: 'hospital',
+    },
   ] as const satisfies {
-    id: keyof SignupSchemaType;
+    id: keyof SignupType;
     label: string;
     type: string;
     placeholder: string;
@@ -83,7 +111,7 @@ export const SignupForm = () => {
       {fields.map((field) => {
         const { id, type, label, placeholder } = field;
         return (
-          <SignupField<SignupSchemaType>
+          <SignupField<SignupType>
             key={id}
             id={id}
             label={label}

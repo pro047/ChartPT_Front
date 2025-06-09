@@ -1,5 +1,5 @@
 export * from './patient';
 export * from './evaluation';
 export * from './plan';
-export * from './main';
-export * from './more';
+export * from './dashboard';
+export * from './user';

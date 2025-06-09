@@ -1,6 +1,15 @@
 export type UserStore = {
+  userId: number | null;
   token: string | null;
   name: string | null;
-  setUser: (token: string, name: string) => void;
+  email: string | null;
+  hospital: string | null;
+  setUser: (
+    userId: number,
+    token: string,
+    name: string,
+    email: string,
+    hospital?: string
+  ) => void;
   clearUser: () => void;
 };
