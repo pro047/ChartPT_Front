@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { login } from '../../api/auth';
 import { useUserStore, UserStore } from '@/shared';
-import toast from 'react-hot-toast';
 
 export const LoginForm = () => {
   const [userEmail, setUserEmail] = useState('');
@@ -24,10 +24,9 @@ export const LoginForm = () => {
     }
 
     try {
-      const { userId, token, name, email, hospital } = await login(
-        userEmail,
-        password
-      );
+      const user = await login(userEmail, password);
+
+      const { userId, token, name, email, hospital } = user;
 
       if (!userId || !token) {
         throw new Error('유효하지 않은 로그인 응답입니다');

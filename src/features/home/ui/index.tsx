@@ -1,15 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export const HomeForm = () => {
-  const router = useRouter();
-
   return (
     <>
       <div>Home</div>
-      <button onClick={() => router.push('/auth/login')}>login</button>
-      <button onClick={() => router.push('/auth/signup')}>signup</button>
+      <Link href='/auth/login'>login</Link>
+      <Link href='/auth/signup'>signup</Link>
+      <Link href='/forgot-password'>forgot your password?</Link>
     </>
   );
 };

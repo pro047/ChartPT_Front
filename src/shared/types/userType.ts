@@ -4,12 +4,6 @@ export type UserStore = {
   name: string | null;
   email: string | null;
   hospital: string | null;
-  setUser: (
-    userId: number,
-    token: string,
-    name: string,
-    email: string,
-    hospital?: string
-  ) => void;
+  setUser: (user: Partial<Omit<UserStore, 'setUser' | 'clearUser'>>) => void;
   clearUser: () => void;
 };

@@ -3,6 +3,7 @@
 import { UserProfile } from '@/entities';
 import { deleteUser } from '@/features/user/api/userAPI';
 import { DeleteButton, useUserStore } from '@/shared';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export const UserProfileWidget = () => {
@@ -18,6 +19,7 @@ export const UserProfileWidget = () => {
   return (
     <>
       <UserProfile />
+      <Link href='/user/profile-update'>프로필 수정</Link>
       <DeleteButton
         onDeleteAction={handleDelete}
         label='회원 탈퇴'

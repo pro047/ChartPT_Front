@@ -11,8 +11,7 @@ export const useUserStore = create<UserStore>()(
       name: null,
       email: null,
       hospital: null,
-      setUser: (userId, token, name, email, hospital) =>
-        set({ userId, token, name, email, hospital }),
+      setUser: (user) => set(user),
       clearUser: () => {
         set({
           userId: null,
