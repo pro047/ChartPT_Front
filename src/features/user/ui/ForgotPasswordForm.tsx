@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { requestResetPassword } from '../api';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import { useUserStore } from '@/shared';
 
 const schema = z.object({
   email: z.string().email('올바른 이메일을 입력하세요'),
@@ -24,16 +24,15 @@ export const ForgotPasswordForm = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [submit, setSumbit] = useState(false);
+  const [submit, setSubmit] = useState(false);
 
-  const router = useRouter();
+  const name = useUserStore.getState().name;
 
   const onSubmit = async (data: ForgotType) => {
     setLoading(true);
     try {
-      requestResetPassword(data.email);
-      setSumbit(true);
-      router.push('/reset-password');
+      await requestResetPassword(data.email, name!);
+      setSubmit(true);
     } catch (err) {
       toast.error('잘못된 요청입니다');
     } finally {

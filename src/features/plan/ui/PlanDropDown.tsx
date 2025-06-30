@@ -53,22 +53,31 @@ export const PlanDropDown = () => {
   }
 
   return (
-    <Dropdown
-      options={plans}
-      getKey={(item) => item.planNumber}
-      getValue={(item) => item.planNumber}
-      getLabel={(item) => `${item.planNumber} 회차`}
-      onChange={handleChange}
-      value={
-        selectedPlanNumber === undefined || selectedPlanNumber === null
-          ? ''
-          : selectedPlanNumber
-      }
-      placeholder={
-        plans.length === 0
-          ? '아직 등록된 계획이 없습니다'
-          : '계획 회차를 선택해주세요'
-      }
-    />
+    <div className='mx-6'>
+      <div className='space-y-3 text-sm'>
+        <div className='font-medium text-muted-foreground mb-2'>계획</div>
+      </div>
+      <Dropdown
+        options={plans}
+        getKey={(item) =>
+          item.planNumber !== undefined ? item.planNumber.toString() : ''
+        }
+        getValue={(item) =>
+          item.planNumber !== undefined ? item.planNumber.toString() : ''
+        }
+        getLabel={(item) => `${item.planNumber} 회차`}
+        onChange={handleChange}
+        value={
+          selectedPlanNumber === undefined || selectedPlanNumber === null
+            ? ''
+            : selectedPlanNumber.toString()
+        }
+        placeholder={
+          plans.length === 0
+            ? '아직 등록된 계획이 없습니다'
+            : '계획 회차를 선택해주세요'
+        }
+      />
+    </div>
   );
 };

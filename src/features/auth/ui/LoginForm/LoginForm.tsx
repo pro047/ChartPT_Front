@@ -1,30 +1,53 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { login } from '../../api/auth';
-import { useUserStore, UserStore } from '@/shared';
+import { useUserStore, UserStore, Divider } from '@/shared';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
+
+const schema = z.object({
+  email: z.string().email('올바른 이메일을 입력해주세요'),
+  password: z.string().min(6, '비밀번호는 최소 6자 이상이어야 합니다'),
+});
+
+type LoginSchema = z.infer<typeof schema>;
 
 export const LoginForm = () => {
-  const [userEmail, setUserEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const form = useForm<LoginSchema>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
   const setUser = useUserStore((state: UserStore) => state.setUser);
   const router = useRouter();
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('[onSubit ok]');
-
-    if (!userEmail || !password) {
+  const onSubmit = async (data: LoginSchema) => {
+    if (!data.email || !data.password) {
       toast.error('이메일과 비밀번호를 입력해주세요');
       return;
     }
 
     try {
-      const user = await login(userEmail, password);
+      const user = await login(data.email, data.password);
 
       const { userId, token, name, email, hospital } = user;
 
@@ -33,7 +56,7 @@ export const LoginForm = () => {
       }
       console.log('[login] 받은 토큰 :', token);
       console.log('[thera] 이름 :', name);
-      setUser(userId, token, name, email, hospital);
+      setUser(user);
       console.log('[로그인결과] :', userId, email, hospital, token, name);
 
       router.push('/dashboard');
@@ -50,24 +73,69 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <h1>로그인</h1>
-      <input
-        type='text'
-        value={userEmail}
-        placeholder='Email'
-        onChange={(e) => setUserEmail(e.target.value)}
-      />
-      <input
-        type='password'
-        value={password}
-        placeholder='Password'
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type='submit'>로그인</button>
-      <Link href='/auth/signup' className='btn'>
-        회원가입
-      </Link>
-    </form>
+    <main className='flex flex-col items-center justify-center min-h-screen px-4'>
+      <Card className='w-full max-w-md mb-12'>
+        <CardContent className='p-8 flex flex-col items-center'>
+          <div className='text-center mb-8'>
+            <h1 className='text-4xl font-bold tracking-tight text-foreground'>
+              로그인
+            </h1>
+          </div>
+
+          <Divider className='mb-7 mt-3' />
+
+          <Form {...form}>
+            <form
+              className='space-y-4 w-full max-w-sm'
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
+              <FormField
+                control={form.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>이메일</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='email'
+                        placeholder='youremail@email.com'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='password'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>비밀번호</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='password'
+                        placeholder='비밀번호'
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <Divider className='mb-10 mt-10' />
+
+              <Button type='submit' className='w-full'>
+                로그인
+              </Button>
+              <Button asChild variant='outline' className='w-full'>
+                <Link href='/forgot-password'>비밀번호 찾기</Link>
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </main>
   );
 };

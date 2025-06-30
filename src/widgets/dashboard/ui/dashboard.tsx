@@ -1,7 +1,7 @@
 'use client';
 
-import { RecentPatientList } from '@/entities';
-import { PatientAddButton, TodoForm } from '@/features';
+import { RecentPatientList, WelcomeSection } from '@/entities';
+import { DashboardPatientAddButton, TodoForm } from '@/features';
 import { useHydrated } from '@/shared';
 
 export const DashboardWidget = () => {
@@ -11,9 +11,12 @@ export const DashboardWidget = () => {
 
   return (
     <>
+      <WelcomeSection />
       <TodoForm />
       <RecentPatientList />
-      <PatientAddButton />
+      <div className='flex justify-center'>
+        <DashboardPatientAddButton />
+      </div>
     </>
   );
 };

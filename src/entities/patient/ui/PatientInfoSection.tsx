@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getPatientInfoById } from '../api';
 import { PatientInfo } from '@/shared';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const PatientInfoSection = ({ patientId }: { patientId: number }) => {
   const [patients, setPatients] = useState<PatientInfo | null>(null);
@@ -31,16 +32,32 @@ export const PatientInfoSection = ({ patientId }: { patientId: number }) => {
   if (loading) return <div>로딩 중 입니다..</div>;
 
   return (
-    <div>
-      <h2>{patients.name} 님</h2>
-      <p>나이 : {patients.age}</p>
-      <p>성별 : {patients.gender}</p>
-      <p>
-        첫 내원일 :{' '}
-        {patients.firstVisit &&
-          new Date(patients.firstVisit).toLocaleDateString()}
-      </p>
-      <p>직업 : {patients.occupation}</p>
-    </div>
+    <Card className='my-5'>
+      <CardHeader>
+        <CardTitle>환자 정보</CardTitle>
+      </CardHeader>
+      <div className='ml-6 space-y-3 text-sm tracking-wide'>
+        <div>
+          <div className='font-medium text-muted-foreground'>나이</div>
+          <div>{patients.age}</div>
+        </div>
+        <div>
+          <div className='font-medium text-muted-foreground'>성별</div>
+          <div>{patients.gender}</div>
+        </div>
+        <div>
+          <div className='font-medium text-muted-foreground'>첫 내원일</div>
+
+          <div>
+            {patients.firstVisit &&
+              new Date(patients.firstVisit).toLocaleDateString()}
+          </div>
+        </div>
+        <div>
+          <div className='font-medium text-muted-foreground'>직업</div>
+          <div>{patients.occupation}</div>
+        </div>
+      </div>
+    </Card>
   );
 };

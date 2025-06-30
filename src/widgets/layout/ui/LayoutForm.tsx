@@ -17,7 +17,7 @@ export const LayoutForm: React.FC<LayoutProps> = ({ children }) => {
       <PatientProvider>
         <div className='flex flex-col'>
           {hydrated && <NavBarForm />}
-          <main className='flex flex-col'>{children}</main>
+          <main>{children}</main>
         </div>
       </PatientProvider>
     </PatientChartProvider>

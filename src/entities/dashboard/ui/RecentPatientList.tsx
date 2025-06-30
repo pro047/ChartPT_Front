@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { recentPatientListApi } from '../api';
 import { RecentPatientType } from '../types';
 import dayjs from 'dayjs';
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CardLayout } from '@/shared';
 
 export const RecentPatientList = () => {
   const [recentPatients, setRecentPatients] = useState<
@@ -28,39 +30,40 @@ export const RecentPatientList = () => {
     return <div className='text-red-500 text-center mt-4 '>{error}</div>;
 
   return (
-    <div className='w-full max-w-3xl mx-auto mt-6'>
-      <div className='bg-white rounded-2xl shadow-md p-4'>
-        <h2 className='text-xl font-semibold mb-4 text-gray-800'>
-          {' '}
-          최근 등록 환자
-        </h2>
-        <div className='overflow-x-auto'>
-          <table className='min-w-full text-sm text-left text-gray-700'>
-            <thead className='bg-gray-100 text-gray-500 uppercase text-xs'>
-              <tr className='divide-x divide-gray-200'>
-                <th scope='col' className='px-4 py-2'>
+    <CardLayout>
+      <CardHeader>
+        <CardTitle className='text-xl'>최근 등록 환자</CardTitle>
+      </CardHeader>
+      <CardContent className='text-sm space-y-1'>
+        <div className='overflow-y-auto my-3'>
+          <table className='w-full'>
+            <thead>
+              <tr className='even:bgmuted m-0 border-t p-0'>
+                <th className='border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right'>
                   이름
                 </th>
-                <th scope='col' className='px-4 py-2'>
+                <th className='border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right'>
                   첫 방문일
                 </th>
               </tr>
             </thead>
-            <tbody className='divide-y divide-gray-100'>
+            <tbody>
               {recentPatients?.length === 0 ? (
-                <tr>
+                <tr className='even:bg-muted m-0 border-t p-0'>
                   <td
                     colSpan={2}
-                    className='px-4 py-6 text-center text-gray-400'
+                    className='border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right'
                   >
                     최근 등록된 환자가 없습니다
                   </td>
                 </tr>
               ) : (
                 recentPatients?.map((patient, index) => (
-                  <tr key={index} className='hover:bg-gray-50 transition'>
-                    <td className='px-4 py-3 font-medium'>{patient.name}</td>
-                    <td className='px-4 py-3 text-gray-600'>
+                  <tr key={index} className='even:bg-muted m-0 border-t p-0'>
+                    <td className='border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right'>
+                      {patient.name}
+                    </td>
+                    <td className='border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right'>
                       {dayjs(patient.firstVisit).format('YYYY.MM.DD')}
                     </td>
                   </tr>
@@ -69,7 +72,7 @@ export const RecentPatientList = () => {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </CardLayout>
   );
 };

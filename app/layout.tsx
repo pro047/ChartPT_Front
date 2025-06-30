@@ -1,7 +1,8 @@
 import React from 'react';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
-import { ThemeProvider } from '@/shared';
+import { GeistSans } from '../lib/fonts';
+import { ProtectedRoute, ThemeProvider } from '@/shared';
 
 export default function RootLayout({
   children,
@@ -9,11 +10,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body>
+    <html lang='en' className={`${GeistSans.variable} dark`}>
+      <body className='bg-background text-foreground font-sans'>
         <ThemeProvider>
-          {children}
-          <Toaster />
+          <ProtectedRoute>
+            {children}
+            <Toaster />
+          </ProtectedRoute>
         </ThemeProvider>
       </body>
     </html>

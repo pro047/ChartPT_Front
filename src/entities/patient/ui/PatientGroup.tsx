@@ -25,21 +25,21 @@ export const PatientGroup = ({
   };
 
   return (
-    <div>
+    <div className='mb-2'>
       <button
         onClick={onToggleAction}
-        className='w-full flex justify-between items-center'
+        className='flex justify-between items-center w-full text-bg-popover-foreground '
       >
         <div>{initial}</div>
         {isOpen ? <BiChevronUp /> : <BiChevronDown />}
       </button>
       <ul
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`ml-2 mt-2 overflow-hidden border-l border-gray-300 transition-all duration-300 ease-in-out ${
           isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
         {patients?.map((patient) => (
-          <li key={patient.id}>
+          <li className='pl-4 mb-2' key={patient.id}>
             <button
               onClick={() => {
                 handleClickPatient(patient);

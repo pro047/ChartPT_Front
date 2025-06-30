@@ -1,11 +1,19 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
 type DropdownProps<T> = {
   options: T[];
-  getKey: (item: T) => number | undefined;
-  getValue: (item: T) => number | undefined;
+  getKey: (item: T) => string;
+  getValue: (item: T) => string;
   getLabel: (item: T) => string;
-  onChange: (value: string | number, item?: T) => void;
+  onChange: (value: string, item?: T) => void;
   placeholder?: string;
-  value?: string | number;
+  value?: string;
 };
 
 export const Dropdown = <T,>({
@@ -18,22 +26,23 @@ export const Dropdown = <T,>({
   value,
 }: DropdownProps<T>) => {
   return (
-    <select
+    <Select
       value={value}
-      onChange={(e) => {
-        const value = e.target.value;
+      onValueChange={(val) => {
         const item = options.find((i) => String(getValue(i)) === value);
-        onChange(value, item);
+        onChange(val, item);
       }}
     >
-      <option value='' disabled hidden>
-        {placeholder}
-      </option>
-      {options.map((item) => (
-        <option key={getKey(item)} value={getValue(item)}>
-          {getLabel(item)}
-        </option>
-      ))}
-    </select>
+      <SelectTrigger className='w-full'>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((item) => (
+          <SelectItem key={getKey(item)} value={getValue(item)}>
+            {getLabel(item)}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 };

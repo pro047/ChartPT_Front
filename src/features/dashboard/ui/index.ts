@@ -1,2 +1,2 @@
 export * from './DashboardTodoForm';
-export * from './PatientAddButton';
+export * from './DashboardPatientAddButton';

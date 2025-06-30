@@ -1,26 +1,34 @@
 import { useEffect, useState } from 'react';
-import { Item } from '../types/types';
+
+interface Item {
+  id: number;
+  text: string;
+  confirm: boolean;
+  done: boolean;
+}
 
 export const useTodoList = () => {
   const [todoList, setTodoList] = useState<Item[]>([]);
-  const [nextId, setNextid] = useState(1);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const storedTodos = localStorage.getItem('todosList');
+    const storedTodos = localStorage.getItem('todoList');
+    if (storedTodos) {
+      setTodoList(JSON.parse(storedTodos));
+    }
+    console.log(storedTodos);
 
-    if (storedTodos) setTodoList(JSON.parse(storedTodos));
-    const id = parseInt(localStorage.getItem('NextId') || '1', 10);
-    setTodoList([{ id, text: '', done: false, confirm: false }]);
+    setIsMounted(true);
   }, []);
 
   useEffect(() => {
+    if (!isMounted) return;
     localStorage.setItem('todoList', JSON.stringify(todoList));
+    console.log(
+      '[Storage] 저장된 투두리스트 :',
+      localStorage.getItem('todoList')
+    );
   }, [todoList]);
-
-  useEffect(() => {
-    console.log('nextId', localStorage.getItem('NextID'));
-    localStorage.setItem('NextId', nextId.toString());
-  }, [nextId]);
 
   const onAddTodoList = () => {
     const lastItem = todoList[todoList.length - 1];
@@ -29,14 +37,16 @@ export const useTodoList = () => {
       return;
     }
     const todoListObj = {
-      id: nextId,
+      id: Date.now(),
       text: '',
       done: false,
       confirm: false,
     };
     const newTodoList = [...todoList, todoListObj];
+    console.log('[add] 추가된 투두리스트 :', newTodoList);
+
     setTodoList(newTodoList);
-    setNextid(nextId + 1);
+    // setNextId(nextId + 1);
   };
 
   const onDeleteTodoList = (removeInputId: number) => {
@@ -44,7 +54,6 @@ export const useTodoList = () => {
       (item: Item) => item.id !== removeInputId
     );
     setTodoList(deletedTodoList);
-    localStorage.setItem('todoList', JSON.stringify(deletedTodoList));
   };
 
   const onUpdateTodoList = (updatedInputId: number, newText: string) => {
@@ -66,7 +75,6 @@ export const useTodoList = () => {
       item.id === inputId ? { ...item, confirm: true } : item
     );
     setTodoList(confirmList);
-    localStorage.setItem('todoList', JSON.stringify(todoList));
   };
 
   return {

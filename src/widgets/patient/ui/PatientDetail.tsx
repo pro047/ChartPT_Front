@@ -1,26 +1,24 @@
 'use client';
 
-import Link from 'next/link';
-import { EvaluationDropDown, PlanDropDown } from '@/features';
-import { PatientInfoSection } from '@/entities';
-import { useHydrated } from '@/shared';
+import { PatientInfoSection, PatientInfoHeader } from '@/entities';
+import { Container, Divider, useHydrated } from '@/shared';
 import { EvaluationsChart } from '@/entities/evaluation/ui/chart';
+import { PatientEvalAndPlanSelect } from '@/features';
 
 export const PatientDetailWidget = ({ patientId }: { patientId: number }) => {
   const hydrated = useHydrated();
 
-  console.log('patientID :', typeof patientId);
-
   if (!hydrated || !patientId) return null;
 
   return (
-    <>
-      <PatientInfoSection patientId={patientId} />
+    <Container>
+      <PatientInfoHeader patientId={patientId} />
+      <Divider />
+      <div className='grid grid-cols-2 gap-4 items-stretch'>
+        <PatientInfoSection patientId={patientId} />
+        <PatientEvalAndPlanSelect patientId={patientId} />
+      </div>
       <EvaluationsChart patientId={patientId} />
-      <EvaluationDropDown patientId={patientId} />
-      <PlanDropDown />
-      <Link href={`/patient/${patientId}/evaluation`}>평가 추가</Link>
-      <Link href={`/patient/${patientId}/plan`}>계획 추가</Link>
-    </>
+    </Container>
   );
 };

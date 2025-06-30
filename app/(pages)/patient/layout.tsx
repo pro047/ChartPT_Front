@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import { LayoutForm } from '@/widgets';
-import { PatientForm } from '@/features/patient';
+import { LayoutForm, PatientMainWiget } from '@/widgets';
+import { PatientChartModalForm } from '@/features';
 
 export default function PatientLayout({
   children,
@@ -15,7 +15,8 @@ export default function PatientLayout({
   const isEvaluationPage = /^\/patient\/\d+/.test(pathname);
   return (
     <LayoutForm>
-      {!isEvaluationPage && <PatientForm />}
+      {!isEvaluationPage && <PatientMainWiget />}
+      <PatientChartModalForm />
       {children}
     </LayoutForm>
   );

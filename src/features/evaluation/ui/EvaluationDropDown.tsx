@@ -55,23 +55,38 @@ export const EvaluationDropDown = ({ patientId }: { patientId: number }) => {
   }
 
   return (
-    <Dropdown
-      options={evaluations}
-      getKey={(item) => item.evaluationNumber}
-      getValue={(item) => item.evaluationNumber}
-      getLabel={(item) => `${item.evaluationNumber} 회차`}
-      onChange={handleChange}
-      value={
-        selectedEvaluationNumber === undefined ||
-        selectedEvaluationNumber === null
-          ? ''
-          : selectedEvaluationNumber
-      }
-      placeholder={
-        evaluations.length === 0
-          ? '아직 등록된 평가가 없습니다'
-          : '평가 회차를 선택해주세요'
-      }
-    />
+    <div className='mx-6'>
+      <div className='space-y-3 text-sm'>
+        <div className='font-medium text-muted-foreground mb-2'>평가</div>
+      </div>
+      <Dropdown
+        options={evaluations}
+        getKey={(item) =>
+          item.evaluationNumber !== undefined
+            ? item.evaluationNumber.toString()
+            : ''
+        }
+        getValue={(item) =>
+          item.evaluationNumber !== undefined
+            ? item.evaluationNumber.toString()
+            : ''
+        }
+        getLabel={(item) => `${item.evaluationNumber} 회차`}
+        onChange={(value) => {
+          handleChange(Number(value));
+        }}
+        value={
+          selectedEvaluationNumber === undefined ||
+          selectedEvaluationNumber === null
+            ? ''
+            : selectedEvaluationNumber.toString()
+        }
+        placeholder={
+          evaluations.length === 0
+            ? '아직 등록된 평가가 없습니다'
+            : '평가 회차를 선택해주세요'
+        }
+      />
+    </div>
   );
 };

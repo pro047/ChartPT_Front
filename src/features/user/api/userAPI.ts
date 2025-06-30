@@ -5,9 +5,12 @@ interface UserData {
   hospital: string;
 }
 
-export const requestResetPassword = async (email: string): Promise<void> => {
+export const requestResetPassword = async (
+  email: string,
+  name: string
+): Promise<void> => {
   try {
-    await Instance.post('/user/request-password-reset', { email });
+    await Instance.post('/user/request-password-reset', { email, name });
   } catch (err) {
     throw new Error('failed request');
   }

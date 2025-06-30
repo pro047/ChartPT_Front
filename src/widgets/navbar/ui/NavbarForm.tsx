@@ -7,6 +7,7 @@ import { SidebarForm } from '@/widgets/';
 import { usePatientContext } from '@/entities';
 import { useUserStore } from '@/shared';
 import { MoreDropdown } from '@/features';
+import { Button } from '@/components/ui/button';
 
 export const NavBarForm = () => {
   const { token } = useUserStore();
@@ -17,34 +18,44 @@ export const NavBarForm = () => {
   const isPatientPage = pathName.startsWith('/patient');
 
   return (
-    <header>
-      <nav className='flex justify-between w-screen p-3'>
-        {isPatientPage && (
-          <button className='w-8 h-6' onClick={() => setIsOpen(true)}>
+    <header className='items-center justify-center px-6 border-b bg-white'>
+      <div className='flex items-center justify-center gap-3'>
+        <div className='flex justify-center items-center w-10'>
+          <Button
+            variant='ghost'
+            onClick={isPatientPage ? () => setIsOpen(true) : undefined}
+            className={isPatientPage ? '' : 'invisible'}
+          >
             <GiHamburgerMenu />
-          </button>
-        )}
-        <ol className='flex justify-between max-w-96'>
-          <li className='mx-3'>
-            <Link href={'/dashboard'}>home</Link>
-          </li>
-          <li className='mx-3'>
+          </Button>
+          {isOpen && (
+            <>
+              <div
+                className='fixed inset-0 bg-black opacity-30 z-40'
+                onClick={() => setIsOpen(false)}
+              />
+              <SidebarForm isOpen={isOpen} setIsOpenAction={setIsOpen} />
+            </>
+          )}
+        </div>
+        <nav className='items-center justify-between w-screen p-3 ml-auto'>
+          <Button
+            variant='ghost'
+            className='inline-flex text-bg-popover-foreground text-sm font-medium outline-offset-[-6px]'
+            asChild
+          >
+            <Link href={'/dashboard'}>Home</Link>
+          </Button>
+          <Button
+            variant='ghost'
+            className='inline-flex text-bg-popover-foreground text-sm font-medium outline-offset-[-6px]'
+            asChild
+          >
             <Link href={'/patient'}>Patient</Link>
-          </li>
-        </ol>
-        {token ? <MoreDropdown /> : <button>login</button>}
-      </nav>
-      {isOpen && (
-        <div
-          className='fixed inset-0 bg-black opacity-30 z-40'
-          onClick={() => setIsOpen(false)}
-        ></div>
-      )}
-      <SidebarForm isOpen={isOpen} setIsOpenAction={setIsOpen} />
+          </Button>
+        </nav>
+        <div>{token ? <MoreDropdown /> : <Button>login</Button>}</div>
+      </div>
     </header>
   );
 };
-
-// <button onClick={token ? onClickLogout : () => router.push('/login')}>
-//           {token ? 'logout' : 'login'}
-//         </button>

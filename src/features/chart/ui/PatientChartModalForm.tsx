@@ -1,43 +1,65 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { usePathname } from 'next/navigation';
-import { chartSchema, ChartSchemaType, FormFieldProps } from '../types';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { FormFieldProps } from '../types';
 import { useSavePatient } from '../hooks';
 import { usePatientChartContext } from '../model';
 import { PatientChartSuccessModal } from './PatientChartSuccessModal';
 import { usePatientContext } from '@/entities';
 import { usePatientStore } from '@/shared';
 
-const ChartField = <T extends Record<string, any>>({
-  id,
-  label,
-  type = 'text',
-  register,
-  placeholder,
-  error,
-}: FormFieldProps<T>) => (
-  <div>
-    <label htmlFor={String(id)}>{label}</label>
-    <input
-      id={String(id)}
-      type={type}
-      placeholder={placeholder}
-      {...(register ? register(id) : {})}
-    />
-    {error && <p>{error}</p>}
-  </div>
-);
+export const chartSchema = z.object({
+  userId: z.number().optional(),
+  name: z.string().nonempty('이름은 필수항목입니다'),
+  gender: z.enum(['male', 'female']),
+  age: z.coerce.number().min(1, { message: '나이는 필수항목입니다' }),
+  firstVisit: z.string().refine((val) => !Number.isNaN(Date.parse(val)), {
+    message: '유효한 날짜 형식이어야 합니다',
+  }),
+  occupation: z.string(),
+});
+
+export type ChartSchemaType = z.infer<typeof chartSchema>;
 
 export const PatientChartModalForm: React.FC = () => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<ChartSchemaType>({ resolver: zodResolver(chartSchema) });
+  const form = useForm<ChartSchemaType>({
+    resolver: zodResolver(chartSchema),
+    defaultValues: {
+      name: '',
+      gender: 'male',
+      age: 0,
+      firstVisit: new Date().toISOString().split('T')[0],
+      occupation: '',
+    },
+  });
+
   const [completeOpen, setCompleteOpen] = useState(false);
   const [newPatientId, setNewPatientId] = useState<number | null>(null);
 
@@ -46,9 +68,25 @@ export const PatientChartModalForm: React.FC = () => {
   const { refetch } = usePatientContext();
   const { close, triggerRefresh, isOpen } = usePatientChartContext();
 
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        name: '',
+        gender: 'male',
+        age: 0,
+        firstVisit: new Date().toISOString().split('T')[0],
+        occupation: '',
+      });
+    }
+  }, [isOpen, form]);
+
   const onSubmit = async (formData: ChartSchemaType) => {
     try {
-      const patientId = await savePatient(formData);
+      const firstVisitDate = new Date(formData.firstVisit);
+      const patientId = await savePatient({
+        ...formData,
+        firstVisit: firstVisitDate,
+      });
       setNewPatientId(patientId);
       setCompleteOpen(true);
       refetch();
@@ -84,54 +122,86 @@ export const PatientChartModalForm: React.FC = () => {
   if (!isOpen) return null;
 
   return (
-    isOpen && (
-      <div className='fixed inset-0 bg-black/40 z-50' onClick={() => close()}>
-        <div
-          className='bg-white p-6 rounded shadow-lg w-[400px] mx-auto mt-40'
-          onClick={(e) => e.stopPropagation()}
-        >
-          <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
+      <DialogContent className='sm:max-w-[425px]'>
+        <DialogHeader>
+          <DialogTitle>환자 추가</DialogTitle>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form
+            className='flex flex-col'
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             {fields.map((field) => {
               const { id, label, placeholder } = field;
               const type = 'type' in field ? field.type : 'text';
 
               return type === 'select' ? (
-                <div key={id}>
-                  <label htmlFor={id}>{label}</label>
-                  <select id={id} {...register(id)}>
-                    <option value='male'>male</option>
-                    <option value='female'>female</option>
-                  </select>
-                  {errors[id] && <p>{errors[id]?.message}</p>}
-                </div>
-              ) : (
-                <ChartField<ChartSchemaType>
+                <FormField
                   key={id}
-                  id={id}
-                  label={label}
-                  type={type}
-                  placeholder={placeholder}
-                  register={register}
-                  error={errors[id]?.message}
+                  control={form.control}
+                  name={id}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='mt-3'>{label}</FormLabel>
+                      <Select onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger className='w-full'>
+                            <SelectValue placeholder='성별을 선택하세요' />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value='male'>male</SelectItem>
+                          <SelectItem value='female'>female</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                <FormField
+                  key={id}
+                  control={form.control}
+                  name={id}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='mt-3'>{label}</FormLabel>
+                      <FormControl>
+                        <Input
+                          id={id}
+                          type={type}
+                          placeholder={placeholder}
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
                 />
               );
             })}
-            <button type='submit'> 저 장 </button>
-            <button type='button' onClick={close}>
-              뒤로가기
-            </button>
+            <div className='flex flex-col gap-3'>
+              <Button className='mt-3' type='submit'>
+                {' '}
+                저 장{' '}
+              </Button>
+              <Button variant='outline' type='button' onClick={close}>
+                뒤로가기
+              </Button>
+            </div>
           </form>
-          {completeOpen && newPatientId !== null && (
-            <PatientChartSuccessModal
-              onCloseAction={() => {
-                setCompleteOpen(false);
-                close();
-              }}
-              patientId={newPatientId}
-            />
-          )}
-        </div>
-      </div>
-    )
+        </Form>
+
+        {completeOpen && newPatientId !== null && (
+          <PatientChartSuccessModal
+            onCloseAction={() => {
+              setCompleteOpen(false);
+              close();
+            }}
+            patientId={newPatientId}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
   );
 };
