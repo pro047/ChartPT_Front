@@ -15,7 +15,7 @@ export type EvaluationStoreType = {
   evaluationInfo: EvaluationType | null;
   evaluations: EvaluationType[];
   setEvaluationNumber: (value: number | null) => void;
-  setEvaluationInfo: (info: EvaluationType) => void;
+  setEvaluationInfo: (info: EvaluationType | null) => void;
   setEvaluations: (list: EvaluationType[]) => void;
   clearEvaluation: () => void;
 };

@@ -1,50 +1,55 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlanType } from '@/entities';
 import { FormFieldProps } from '@/shared';
 import { PlanSchema } from '@/entities';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { usePlanContext } from '@/features';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 type planUpdateType = {
   initialData?: PlanType;
-  onSubmitAction: (data: PlanType) => Promise<void>;
+  onSubmitAction?: (data: PlanType) => Promise<void>;
 };
 
-const Planfield = <T extends Record<string, any>>({
-  id,
-  label,
-  type = 'text',
-  register,
-  placeholder,
-  error,
-}: FormFieldProps<T>) => (
-  <div>
-    <label htmlFor={String(id)}>{label}</label>
-    <input
-      id={String(id)}
-      type={type}
-      placeholder={placeholder}
-      {...(register ? register(id) : {})}
-    />
-
-    {error && <p>{error}</p>}
-  </div>
-);
+const defaultValues = {
+  stg: '',
+  ltg: '',
+  treatmentPlan: '',
+  exercisePlan: '',
+  homework: '',
+};
 
 export const PlanForm: React.FC<planUpdateType> = ({
   initialData,
   onSubmitAction,
 }) => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<PlanType>({
+  const form = useForm<PlanType>({
     resolver: zodResolver(PlanSchema),
-    defaultValues: initialData,
+    defaultValues: defaultValues,
   });
+
+  const { close, isOpen, mode } = usePlanContext();
+
+  useEffect(() => {
+    form.reset(mode === 'create' ? defaultValues : initialData);
+  }, [mode]);
 
   const field = useMemo<FormFieldProps<PlanType>[]>(
     () => [
@@ -66,25 +71,56 @@ export const PlanForm: React.FC<planUpdateType> = ({
   );
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmitAction)}>
-        {field.map((field) => {
-          const { id, label, placeholder, type } = field;
+    <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {mode === 'create' ? '계획 추가' : '계획 수정'}
+          </DialogTitle>
+        </DialogHeader>
 
-          return (
-            <Planfield<PlanType>
-              key={id}
-              id={id}
-              label={label}
-              type={type}
-              placeholder={placeholder}
-              register={register}
-              error={errors[id]?.message}
-            />
-          );
-        })}
-        <button type='submit'> 저 장 </button>
-      </form>
-    </div>
+        <Form {...form}>
+          <form
+            className='flex flex-col'
+            onSubmit={form.handleSubmit(async (data) => {
+              if (onSubmitAction) {
+                await onSubmitAction(data);
+              } else {
+                console.warn('onSubmitAction is not defined');
+              }
+            })}
+          >
+            {field.map((field) => {
+              const { id, label, placeholder, type } = field;
+
+              return (
+                <FormField
+                  key={id}
+                  control={form.control}
+                  name={id}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='mt-3'>{label}</FormLabel>
+                      <FormControl>
+                        <Input
+                          id={id}
+                          type={type}
+                          placeholder={placeholder}
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
+            <Button className='mt-5' type='submit'>
+              {' '}
+              저 장{' '}
+            </Button>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };

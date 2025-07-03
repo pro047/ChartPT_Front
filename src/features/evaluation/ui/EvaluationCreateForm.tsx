@@ -1,31 +1,38 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { EvaluationType } from '@/entities';
-import { useEvaluationStore, usePatientStore } from '@/shared';
-import { EvaluationForm } from '@/features';
+import { useEvaluationStore } from '@/shared';
+import { EvaluationForm, useEvaluationContext } from '@/features';
 import { useSaveEvaluation } from '../hooks';
+import { useState } from 'react';
 
 export const EvaluationCreateForm = () => {
   const saveEvaluation = useSaveEvaluation();
-  const router = useRouter();
+
+  const [openSuccessDialog, setOpenSuccessDialogAction] = useState(false);
+
+  const { triggerEvalDropdownRefresh } = useEvaluationContext();
 
   const onCreateSubmit = async (formData: EvaluationType) => {
     try {
-      const patientId = usePatientStore.getState().patientId;
-      console.log('evaluation form patientid :', patientId);
-
       const evaluationNumber = await saveEvaluation(formData);
       console.log('evaluation form evaluationNumber :', evaluationNumber);
 
       useEvaluationStore.getState().setEvaluationInfo(formData);
       useEvaluationStore.getState().setEvaluationNumber(evaluationNumber);
-      router.push(`/patient/${patientId}/evaluation/${evaluationNumber}`);
+      setOpenSuccessDialogAction(true);
+      triggerEvalDropdownRefresh();
     } catch (err) {
       console.error('[save evaluation error] :', err);
       throw new Error('Failed save Evaluation');
     }
   };
 
-  return <EvaluationForm onSubmitAction={onCreateSubmit} />;
+  return (
+    <EvaluationForm
+      onSubmitAction={onCreateSubmit}
+      openSuccessDialog={openSuccessDialog}
+      setOpenSuccessDialogAction={setOpenSuccessDialogAction}
+    />
+  );
 };

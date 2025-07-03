@@ -16,6 +16,7 @@ export const EvaluationUpdateForm = ({
 }) => {
   const [evaluation, setEvaluation] = useState<EvaluationType | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [openSuccessDialog, setOpenSuccessDialogAction] = useState(false);
 
   const router = useRouter();
   const updated = useUpdateEvaluation();
@@ -23,11 +24,12 @@ export const EvaluationUpdateForm = ({
   useEffect(() => {
     const fetch = async () => {
       try {
-        const data = await getEvaluationByPateintIdAndEvaluationNumber(
+        const evaluation = await getEvaluationByPateintIdAndEvaluationNumber(
           Number(params.patientId),
           Number(params.evaluationNumber)
         );
-        setEvaluation(data);
+        console.log('data :', evaluation);
+        setEvaluation(evaluation);
       } catch (err) {
         console.error('Failed fetch :', err);
         setError('Failed fetch');
@@ -48,6 +50,11 @@ export const EvaluationUpdateForm = ({
   };
 
   return (
-    <EvaluationForm initialData={evaluation} onSubmitAction={handleSubmit} />
+    <EvaluationForm
+      targetEvaluation={evaluation}
+      onSubmitAction={handleSubmit}
+      openSuccessDialog={openSuccessDialog}
+      setOpenSuccessDialogAction={setOpenSuccessDialogAction}
+    />
   );
 };

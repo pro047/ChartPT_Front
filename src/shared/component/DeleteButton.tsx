@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
 type Props = {
@@ -8,6 +9,15 @@ type Props = {
   message: string;
   confirmText: string;
   cancelText: string;
+  variant:
+    | 'link'
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | null
+    | undefined;
 };
 
 export const DeleteButton = ({
@@ -16,6 +26,7 @@ export const DeleteButton = ({
   message,
   confirmText,
   cancelText,
+  variant,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,15 +37,17 @@ export const DeleteButton = ({
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)}>{label}</button>
+      <Button variant={variant} onClick={() => setIsOpen(true)}>
+        {label}
+      </Button>
 
       {isOpen && (
         <div className='fixed inset-0 bg-black/40 flex items-center justify-center z-50'>
           <div className='bg-white p-4 rounded shadow'>
             <p>{message}</p>
             <div className='flex justify-end gap-2 mt-4'>
-              <button onClick={() => setIsOpen(false)}>{cancelText}</button>
-              <button onClick={handleConfirm}>{confirmText}</button>
+              <Button onClick={() => setIsOpen(false)}>{cancelText}</Button>
+              <Button onClick={handleConfirm}>{confirmText}</Button>
             </div>
           </div>
         </div>

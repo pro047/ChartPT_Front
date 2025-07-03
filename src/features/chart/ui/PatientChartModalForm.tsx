@@ -35,7 +35,7 @@ import { PatientChartSuccessModal } from './PatientChartSuccessModal';
 import { usePatientContext } from '@/entities';
 import { usePatientStore } from '@/shared';
 
-export const chartSchema = z.object({
+const chartSchema = z.object({
   userId: z.number().optional(),
   name: z.string().nonempty('이름은 필수항목입니다'),
   gender: z.enum(['male', 'female']),
@@ -46,7 +46,7 @@ export const chartSchema = z.object({
   occupation: z.string(),
 });
 
-export type ChartSchemaType = z.infer<typeof chartSchema>;
+type ChartSchemaType = z.infer<typeof chartSchema>;
 
 export const PatientChartModalForm: React.FC = () => {
   const form = useForm<ChartSchemaType>({

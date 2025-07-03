@@ -1,23 +1,22 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { PlanType } from '@/entities';
-import { usePatientStore } from '@/shared';
 import { useSavePlan } from '../hooks';
-import { usePlanStore } from '@/shared/store/planStore';
+import { usePlanStore } from '@/shared';
 import { PlanForm } from './PlanForm';
+import { usePlanContext } from '@/features';
 
 export const PlanCreateForm = () => {
   const savePlan = useSavePlan();
-  const router = useRouter();
+
+  const { triggerPlanDropdownRefresh } = usePlanContext();
 
   const onCreateSubmit = async (formData: PlanType) => {
     try {
-      const patientId = usePatientStore.getState().patientId;
       const planNumber = await savePlan(formData);
       usePlanStore.getState().setPlanInfo(formData);
       usePlanStore.getState().setPlanNumber(planNumber);
-      router.push(`/patient/${patientId}/plan/${planNumber}`);
+      triggerPlanDropdownRefresh();
     } catch (err) {
       throw new Error('Failed save plan');
     }

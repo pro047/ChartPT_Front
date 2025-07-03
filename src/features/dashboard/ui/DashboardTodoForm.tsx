@@ -1,7 +1,7 @@
 'use client';
 
 import { useTodoList } from '../hooks/useTodoList';
-import { Item } from '../types/types';
+import { Item } from '../type';
 import { CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';

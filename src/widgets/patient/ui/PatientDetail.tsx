@@ -3,7 +3,11 @@
 import { PatientInfoSection, PatientInfoHeader } from '@/entities';
 import { Container, Divider, useHydrated } from '@/shared';
 import { EvaluationsChart } from '@/entities/evaluation/ui/chart';
-import { PatientEvalAndPlanSelect } from '@/features';
+import {
+  EvaluationCreateForm,
+  PatientEvalAndPlanSelect,
+  PlanCreateForm,
+} from '@/features';
 
 export const PatientDetailWidget = ({ patientId }: { patientId: number }) => {
   const hydrated = useHydrated();
@@ -17,6 +21,8 @@ export const PatientDetailWidget = ({ patientId }: { patientId: number }) => {
       <div className='grid grid-cols-2 gap-4 items-stretch'>
         <PatientInfoSection patientId={patientId} />
         <PatientEvalAndPlanSelect patientId={patientId} />
+        <EvaluationCreateForm />
+        <PlanCreateForm />
       </div>
       <EvaluationsChart patientId={patientId} />
     </Container>

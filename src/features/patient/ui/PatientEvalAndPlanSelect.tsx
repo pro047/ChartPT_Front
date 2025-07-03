@@ -1,13 +1,20 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
-import { EvaluationDropDown, PlanDropDown } from '@/features';
-import Link from 'next/link';
+import {
+  EvaluationDropDown,
+  PlanDropDown,
+  useEvaluationContext,
+  usePlanContext,
+} from '@/features';
 
 export const PatientEvalAndPlanSelect = ({
   patientId,
 }: {
   patientId: number;
 }) => {
+  const { evalOpen, isOpen } = useEvaluationContext();
+  const { planOpen } = usePlanContext();
+
   return (
     <Card className='my-5'>
       <CardHeader>
@@ -15,11 +22,11 @@ export const PatientEvalAndPlanSelect = ({
       </CardHeader>
       <EvaluationDropDown patientId={patientId} />
       <PlanDropDown />
-      <Button asChild className='mx-6'>
-        <Link href={`/patient/${patientId}/evaluation`}>평가 추가</Link>
+      <Button className='mx-6' onClick={evalOpen}>
+        평가 추가
       </Button>
-      <Button asChild className='mx-6'>
-        <Link href={`/patient/${patientId}/plan`}>계획 추가</Link>
+      <Button className='mx-6' onClick={planOpen}>
+        계획 추가
       </Button>
     </Card>
   );

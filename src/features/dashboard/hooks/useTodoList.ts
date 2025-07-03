@@ -1,11 +1,5 @@
 import { useEffect, useState } from 'react';
-
-interface Item {
-  id: number;
-  text: string;
-  confirm: boolean;
-  done: boolean;
-}
+import { Item } from '../type';
 
 export const useTodoList = () => {
   const [todoList, setTodoList] = useState<Item[]>([]);
