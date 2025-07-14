@@ -12,7 +12,7 @@ export const PatientEvalAndPlanSelect = ({
 }: {
   patientId: number;
 }) => {
-  const { evalOpen, isOpen } = useEvaluationContext();
+  const { evalOpen } = useEvaluationContext();
   const { planOpen } = usePlanContext();
 
   return (

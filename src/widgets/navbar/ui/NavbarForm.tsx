@@ -18,7 +18,7 @@ export const NavBarForm = () => {
   const isPatientPage = pathName.startsWith('/patient');
 
   return (
-    <header className='items-center justify-center px-6 border-b bg-white'>
+    <header className='items-center justify-center px-6 border-b bg-white dark:bg-black'>
       <div className='flex items-center justify-center gap-3'>
         <div className='flex justify-center items-center w-10'>
           <Button

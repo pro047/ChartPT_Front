@@ -4,3 +4,4 @@ export * from './patientTypes';
 export * from './evaluaionType';
 export * from './planType';
 export * from './formFieldType';
+export * from './todoType';

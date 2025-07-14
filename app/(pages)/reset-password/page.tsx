@@ -1,5 +1,5 @@
 import { ResetPasswordForm } from '@/features';
 
-export default function ResetPasswordPage() {
+export default function resetPasswordPage() {
   return <ResetPasswordForm />;
 }

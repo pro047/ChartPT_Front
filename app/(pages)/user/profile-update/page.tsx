@@ -1,10 +1,5 @@
-import { ChangePasswordForm, ChangeUserProfile } from '@/features';
+import { UserProfileUpdateWidget } from '@/widgets';
 
 export default function ChangeUserProfilePage() {
-  return (
-    <>
-      <ChangeUserProfile />
-      <ChangePasswordForm />
-    </>
-  );
+  return <UserProfileUpdateWidget />;
 }

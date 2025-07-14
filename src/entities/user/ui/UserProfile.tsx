@@ -1,6 +1,7 @@
 'use client';
 
-import { useHydrated, useUserStore } from '@/shared';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Divider, Header, useHydrated, useUserStore } from '@/shared';
 
 export const UserProfile = () => {
   const hydrated = useHydrated();
@@ -13,9 +14,23 @@ export const UserProfile = () => {
 
   return (
     <div>
-      <h2>{name} 님</h2>
-      <div>{email}</div>
-      {hospital ? <div>{hospital}</div> : <div>근무 병원을 추가해주세요</div>}
+      <Header>{name} 치료사님</Header>
+      <Divider />
+      <Card className='my-5'>
+        <CardHeader>
+          <CardTitle>프로필</CardTitle>
+        </CardHeader>
+        <div className='ml-6 space-y-3 text-medium font-bold tracking-wide'>
+          <div className='font-medium text-muted-foreground'>이메일</div>
+          <div>{email}</div>
+          <div className='font-medium text-muted-foreground'>병원</div>
+          {hospital ? (
+            <div>{hospital}</div>
+          ) : (
+            <div>근무 병원을 추가해주세요</div>
+          )}
+        </div>
+      </Card>
     </div>
   );
 };

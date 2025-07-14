@@ -16,7 +16,7 @@ type Props = {
   onOpenChangeAction: (open: boolean) => void;
   title: string;
   description?: string;
-  cancelText: string;
+  cancelText?: string;
   actionText: string;
   onClickAction: () => void;
 };

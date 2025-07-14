@@ -4,8 +4,8 @@ import { usePatientChartContext } from '@/features/chart';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { RiAccountCircleLine } from 'react-icons/ri';
-import { LogoutCheckModal } from './LogoutCheckModal';
-import { DarkModeToggleButton } from '../component';
+import { ConfirmDialog, ToggleAnimation } from '@/shared';
+import { logout } from '@/features/auth';
 
 export const MoreDropdown = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -33,15 +33,15 @@ export const MoreDropdown = () => {
     <div className='relative inline-block text-left' ref={menuRef}>
       <button
         onClick={() => setOpenMenu((prev) => !prev)}
-        className='p-2 rounded-full hover:bg-gray-100'
+        className='p-2 rounded-full hover:bg-accent/50'
       >
         <RiAccountCircleLine className='text-2xl' />
       </button>
 
       {openMenu && (
-        <div className='absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg z-10'>
+        <div className='absolute right-0 my-2 w-30 space-y-3 bg-white dark:bg-black border border-gray-200 rounded shadow-lg z-10 [&>*]:px-4 [&>*]:my-2'>
           <div
-            className='px-4 py-2 hover:bg-gray-100 cursor-pointer'
+            className='py-2 hover:bg-gray-100 dark:text-white dark:hover:text-black cursor-pointer '
             onClick={() => {
               console.log('프로필 클릭');
               setOpenMenu(false);
@@ -50,9 +50,11 @@ export const MoreDropdown = () => {
           >
             프로필
           </div>
-          <DarkModeToggleButton />
+          <div>
+            <ToggleAnimation />
+          </div>
           <div
-            className='px-4 py-2 hover:bg-gray-100 cursor-pointer'
+            className='py-2 hover:bg-gray-100 dark:text-white dark:hover:text-black cursor-pointer '
             onClick={() => {
               setOpenMenu(false);
               setShowModal(true);
@@ -63,10 +65,18 @@ export const MoreDropdown = () => {
         </div>
       )}
       {showModal && (
-        <LogoutCheckModal
-          closeAction={() => {
+        <ConfirmDialog
+          open={showModal}
+          title={'로그아웃'}
+          description='정말 로그아웃 하시겠습니까?'
+          cancelText='취소'
+          actionText='확인'
+          onOpenChangeAction={setShowModal}
+          onClickAction={() => {
             setShowModal(false);
             close();
+            logout();
+            router.push(`/`);
           }}
         />
       )}

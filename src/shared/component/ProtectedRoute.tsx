@@ -1,21 +1,32 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useUserStore } from '../store';
-import { useRouter } from 'next/navigation';
 import { useHydrated } from '../hooks';
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const userId = useUserStore((state) => state.userId);
+  const token = useUserStore((state) => state.token);
+  const pathName = usePathname();
   const hydrated = useHydrated();
   const router = useRouter();
 
+  const publicRoutes = [
+    '/',
+    '/auth/login',
+    '/auth/signup',
+    '/forgot-password',
+    '/reset-password',
+  ];
+
+  const isPublicRoutes = publicRoutes.some((path) => pathName.startsWith(path));
+
   useEffect(() => {
     if (!hydrated) return;
-    if (!userId) {
+    if (!token && !isPublicRoutes) {
       router.replace('/');
     }
-  }, [hydrated, userId, router]);
+  }, [hydrated, token, pathName]);
 
   if (!hydrated) return null;
 

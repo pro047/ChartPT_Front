@@ -31,9 +31,8 @@ import {
 import { FormFieldProps } from '../types';
 import { useSavePatient } from '../hooks';
 import { usePatientChartContext } from '../model';
-import { PatientChartSuccessModal } from './PatientChartSuccessModal';
 import { usePatientContext } from '@/entities';
-import { usePatientStore } from '@/shared';
+import { ConfirmDialog, usePatientStore } from '@/shared';
 
 const chartSchema = z.object({
   userId: z.number().optional(),
@@ -60,7 +59,7 @@ export const PatientChartModalForm: React.FC = () => {
     },
   });
 
-  const [completeOpen, setCompleteOpen] = useState(false);
+  const [openSuccessDialog, setOpenSuccessDialogAction] = useState(false);
   const [newPatientId, setNewPatientId] = useState<number | null>(null);
 
   const savePatient = useSavePatient();
@@ -88,7 +87,7 @@ export const PatientChartModalForm: React.FC = () => {
         firstVisit: firstVisitDate,
       });
       setNewPatientId(patientId);
-      setCompleteOpen(true);
+      setOpenSuccessDialogAction(true);
       refetch();
       triggerRefresh();
 
@@ -180,7 +179,7 @@ export const PatientChartModalForm: React.FC = () => {
                 />
               );
             })}
-            <div className='flex flex-col gap-3'>
+            <div className='flex flex-col gap-3 mt-5'>
               <Button className='mt-3' type='submit'>
                 {' '}
                 저 장{' '}
@@ -192,15 +191,18 @@ export const PatientChartModalForm: React.FC = () => {
           </form>
         </Form>
 
-        {completeOpen && newPatientId !== null && (
-          <PatientChartSuccessModal
-            onCloseAction={() => {
-              setCompleteOpen(false);
-              close();
-            }}
-            patientId={newPatientId}
-          />
-        )}
+        <ConfirmDialog
+          open={openSuccessDialog}
+          title='추가 성공'
+          description='이제 환자 평가를 시작해보세요'
+          cancelText='취소'
+          actionText='확인'
+          onOpenChangeAction={setOpenSuccessDialogAction}
+          onClickAction={() => {
+            setOpenSuccessDialogAction(false);
+            close();
+          }}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -8,21 +8,38 @@ import { changeProfile } from '../api';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/shared';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 
 const schema = z.object({
   name: z.string(),
   hospital: z.string(),
 });
 
-type changeProfileSchema = z.infer<typeof schema>;
+type ChangeProfileSchema = z.infer<typeof schema>;
+
+type FormFieldProp = {
+  id: keyof ChangeProfileSchema;
+  label: string;
+  type: string;
+  placeholder: string;
+};
 
 export const ChangeUserProfile = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<changeProfileSchema>({
+  const form = useForm<ChangeProfileSchema>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      name: '',
+      hospital: '',
+    },
   });
 
   const [loading, setLoading] = useState(false);
@@ -30,7 +47,7 @@ export const ChangeUserProfile = () => {
   const setUser = useUserStore((state) => state.setUser);
   const router = useRouter();
 
-  const onSubmit = async (data: changeProfileSchema) => {
+  const onSubmit = async (data: ChangeProfileSchema) => {
     setLoading(true);
 
     try {
@@ -49,16 +66,49 @@ export const ChangeUserProfile = () => {
     }
   };
 
+  const fields: FormFieldProp[] = [
+    { id: 'name', label: '이름', type: 'text', placeholder: '이름' },
+    { id: 'hospital', label: '병원', type: 'text', placeholder: '병원' },
+  ];
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h1>프로필 수정</h1>
-      <input {...register('name')} type='text' placeholder='이름' />
-      {errors.name && <p>{errors.name.message}</p>}
-      <input {...register('hospital')} type='text' placeholder='근무 병원' />
-      {errors.hospital && <p>{errors.hospital.message}</p>}
-      <button type='submit' disabled={loading}>
-        {loading ? '변경 중 ....' : '프로필 변경'}
-      </button>
-    </form>
+    <Card>
+      <CardHeader>
+        <CardTitle>프로필 변경</CardTitle>
+      </CardHeader>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className='flex flex-col space-y-3 px-6'>
+            {fields.map((field) => {
+              const { id, label, type, placeholder } = field;
+              return (
+                <FormField
+                  key={id}
+                  control={form.control}
+                  name={id}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{label}</FormLabel>
+                      <FormControl>
+                        <Input
+                          id={id}
+                          type={type}
+                          placeholder={placeholder}
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              );
+            })}
+            <Button type='submit' className='mt-5'>
+              프로필 변경
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </Card>
   );
 };

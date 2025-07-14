@@ -6,3 +6,4 @@ export * from './Divider';
 export * from './CardLayout';
 export * from './Header';
 export * from './ConfirmDialog';
+export * from './ToggleAnimation';

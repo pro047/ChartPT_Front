@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { SignUp } from '@/features';
-import { useUserStore, UserStore } from '@/shared';
+import { useUserStore, UserStore, Divider } from '@/shared';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 import {
@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 const schema = z
   .object({
@@ -75,99 +76,109 @@ export const SignupForm = () => {
 
   return (
     <main className='flex flex-col items-center justify-center min-h-screen px-4'>
-      <div className='text-center mb-8'>
-        <h1 className='text-4xl font-bold tracking-tight text-foreground'>
-          회원가입
-        </h1>
-      </div>
+      <Card className='w-full max-w-md mb-12'>
+        <CardContent className='flex flex-col items-center px-8 py-4'>
+          <div className='text-center mb-8'>
+            <h1 className='text-4xl font-bold tracking-tight text-foreground'>
+              회원가입
+            </h1>
+          </div>
 
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-4 w-full max-w-sm'
-        >
-          <FormField
-            control={form.control}
-            name='email'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>이메일을 입력해주세요</FormLabel>
-                <FormControl>
-                  <Input
-                    type='email'
-                    placeholder='youremail@email.com'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <Divider className='mb-7 mt-3' />
 
-          <FormField
-            control={form.control}
-            name='password'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>비밀번호를 입력해주세요</FormLabel>
-                <FormControl>
-                  <Input type='password' placeholder='Password' {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className='space-y-4 w-full max-w-sm'
+            >
+              <FormField
+                control={form.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>이메일을 입력해주세요</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='email'
+                        placeholder='youremail@email.com'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name='confirmPassword'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>비밀번호를 한번 더 입력해주세요</FormLabel>
-                <FormControl>
-                  <Input
-                    type='password'
-                    placeholder='Password Check'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name='password'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>비밀번호를 입력해주세요</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='password'
+                        placeholder='Password'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name='name'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>이름을 입력해주세요</FormLabel>
-                <FormControl>
-                  <Input type='text' placeholder='Name' {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name='confirmPassword'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>비밀번호를 한번 더 입력해주세요</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='password'
+                        placeholder='Password Check'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name='hospital'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>근무하는 병원을 입력해주세요</FormLabel>
-                <FormControl>
-                  <Input type='text' placeholder='Hospital' {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type='submit' className='w-full'>
-            회원가입
-          </Button>
-        </form>
-      </Form>
+              <FormField
+                control={form.control}
+                name='name'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>이름을 입력해주세요</FormLabel>
+                    <FormControl>
+                      <Input type='text' placeholder='Name' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='hospital'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>근무하는 병원을 입력해주세요</FormLabel>
+                    <FormControl>
+                      <Input type='text' placeholder='Hospital' {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type='submit' className='w-full mt-5'>
+                회원가입
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
     </main>
   );
 };
