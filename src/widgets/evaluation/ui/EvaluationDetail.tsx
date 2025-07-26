@@ -1,6 +1,6 @@
 'use client';
 
-import { PatientInfoSection, EvaluationInfoSection } from '@/entities';
+import { EvaluationTargetGridCard } from '@/entities';
 import {
   ConfirmDialog,
   Container,
@@ -10,13 +10,10 @@ import {
   useHydrated,
   usePatientStore,
 } from '@/shared';
-import {
-  EvaluationCreateForm,
-  EvaluationUpdateForm,
-  deleteEvaluation,
-} from '@/features';
+import { EvaluationCreateForm, EvaluationUpdateForm } from '@/features';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDeleteEvaluataion } from '@/features/evaluation/hooks/useDeleteEvaluations';
 
 export const EvaluationDetailWidget = () => {
   const [openDelete, setOpenDeleteAction] = useState(false);
@@ -28,13 +25,23 @@ export const EvaluationDetailWidget = () => {
     (state) => state.evaluationNumber
   );
 
+  const { mutate } = useDeleteEvaluataion();
   const router = useRouter();
 
   if (!hydrated || !patientId || !evaluationNumber) return null;
 
   const handleDelete = async () => {
-    await deleteEvaluation(patientId, evaluationNumber);
-    router.push(`/patient/${patientId}`);
+    mutate(
+      { patientId, evaluationNumber },
+      {
+        onSuccess: () => {
+          router.push(`/patient/${patientId}`);
+        },
+        onError: (err) => {
+          console.error('[delete evaluation error] :', err);
+        },
+      }
+    );
   };
 
   return (
@@ -43,12 +50,12 @@ export const EvaluationDetailWidget = () => {
         {patients?.name} 님 {evaluationNumber} 회차 평가 기록
       </Header>
       <Divider />
-      <div className='text-m font-semibold text-muted-foreground mt-5'>
+      <div className='text-m font-semibold text-muted-foreground my-5'>
         {patients?.name} 님의 {evaluationNumber} 회차 평가 기록입니다
       </div>
+      <Divider />
       <div className='grid grid-cols-2 gap-4 items-stretch'>
-        <PatientInfoSection patientId={patientId} />
-        <EvaluationInfoSection
+        <EvaluationTargetGridCard
           onClickDeleteAction={() => setOpenDeleteAction(true)}
         />
         <EvaluationCreateForm />
@@ -58,6 +65,7 @@ export const EvaluationDetailWidget = () => {
             evaluationNumber: String(evaluationNumber),
           }}
         />
+
         <ConfirmDialog
           open={openDelete}
           title='평가 삭제'

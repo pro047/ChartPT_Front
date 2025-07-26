@@ -1,37 +1,20 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { PlanType } from '@/entities';
-import { Dropdown, useHydrated, usePatientStore } from '@/shared';
-import { usePlanStore } from '@/shared/store/planStore';
-import { getAllplansByPatientId } from '@/entities/plan/api';
+import { Dropdown, useHydrated, usePlanStore } from '@/shared';
+import { usePlans } from '@/entities';
 
-export const PlanDropDown = () => {
-  const [plans, setPlans] = useState<PlanType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+export const PlanDropDown = ({ patientId }: { patientId: number }) => {
+  const { data, isLoading, error } = usePlans(patientId);
+
+  const plans = data?.plans ?? [];
 
   const router = useRouter();
   const hydrated = useHydrated();
 
-  const patientId = usePatientStore((state) => state.patientId);
   const selectedPlanNumber = usePlanStore((state) => state.planNumber);
   const setPlanNumber = usePlanStore((state) => state.setPlanNumber);
-
-  useEffect(() => {
-    if (!hydrated || !patientId) return;
-
-    setPlanNumber(null);
-    setPlans([]);
-    setLoading(true);
-    setError(null);
-
-    getAllplansByPatientId(patientId)
-      .then((data) => setPlans(data.plans))
-      .catch((err) => setError(err as Error))
-      .finally(() => setLoading(false));
-  }, [patientId, hydrated]);
 
   const handleChange = useCallback(
     (value: string | number) => {
@@ -45,7 +28,7 @@ export const PlanDropDown = () => {
   if (!patientId) {
     return <div>환자 정보가 없습니다 다시 시도해주세요</div>;
   }
-  if (loading) {
+  if (isLoading) {
     return <div>계획 데이터를 불러오는 중입니다</div>;
   }
   if (error) {

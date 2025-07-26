@@ -2,7 +2,7 @@
 
 import { PatientInfoSection, PatientInfoHeader } from '@/entities';
 import { Container, Divider, useHydrated } from '@/shared';
-import { EvaluationsChart } from '@/entities/evaluation/ui/chart';
+import { EvaluationsChart } from '@/entities';
 import {
   EvaluationCreateForm,
   PatientEvalAndPlanSelect,

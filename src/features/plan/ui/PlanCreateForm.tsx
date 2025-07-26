@@ -1,26 +1,35 @@
 'use client';
 
 import { PlanType } from '@/entities';
-import { useSavePlan } from '../hooks';
-import { usePlanStore } from '@/shared';
+import { useCreatePlan } from '../hooks';
 import { PlanForm } from './PlanForm';
-import { usePlanContext } from '@/features';
+import { useState } from 'react';
 
 export const PlanCreateForm = () => {
-  const savePlan = useSavePlan();
+  const { mutate } = useCreatePlan();
 
-  const { triggerPlanDropdownRefresh } = usePlanContext();
+  const [openSuccessDialog, setOpenSuccessDialogAction] = useState(false);
 
   const onCreateSubmit = async (formData: PlanType) => {
-    try {
-      const planNumber = await savePlan(formData);
-      usePlanStore.getState().setPlanInfo(formData);
-      usePlanStore.getState().setPlanNumber(planNumber);
-      triggerPlanDropdownRefresh();
-    } catch (err) {
-      throw new Error('Failed save plan');
-    }
+    mutate(
+      { data: formData },
+      {
+        onSuccess: () => {
+          setOpenSuccessDialogAction(true);
+        },
+        onError: (err) => {
+          console.error('[save plans error] :', err);
+          throw new Error('Failed save plans');
+        },
+      }
+    );
   };
 
-  return <PlanForm onSubmitAction={onCreateSubmit} />;
+  return (
+    <PlanForm
+      onSubmitAction={onCreateSubmit}
+      openSuccessDialog={openSuccessDialog}
+      setOpenSuccessDialogAction={setOpenSuccessDialogAction}
+    />
+  );
 };

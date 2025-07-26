@@ -21,7 +21,7 @@ export const PatientEvalAndPlanSelect = ({
         <CardTitle>평가 및 계획</CardTitle>
       </CardHeader>
       <EvaluationDropDown patientId={patientId} />
-      <PlanDropDown />
+      <PlanDropDown patientId={patientId} />
       <Button className='mx-6' onClick={evalOpen}>
         평가 추가
       </Button>

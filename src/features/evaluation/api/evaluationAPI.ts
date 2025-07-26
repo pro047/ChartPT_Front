@@ -1,17 +1,16 @@
-import { EvaluationType } from '@/entities';
-import { Instance } from '@/shared';
+import { EvaluationCreateType, EvaluationUpdateType, Instance } from '@/shared';
 
 export const saveEvaluation = async (
   patientId: number,
-  data: EvaluationType
-): Promise<number> => {
+  data: EvaluationCreateType
+): Promise<EvaluationCreateType> => {
   try {
     const result = await Instance.post(
       `/patient/${patientId}/evaluation`,
       data
     );
     console.log('[saveEval data] :', result);
-    return result.data.evaluationNumber;
+    return result.data;
   } catch (err) {
     console.error('[saveEval error] :', err);
     throw new Error('평가 저장 실패');
@@ -21,7 +20,7 @@ export const saveEvaluation = async (
 export const updateEvaluation = async (
   patientId: number,
   evaluationNumber: number,
-  updateData: Partial<EvaluationType>
+  updateData: EvaluationUpdateType
 ): Promise<void> => {
   try {
     await Instance.put(

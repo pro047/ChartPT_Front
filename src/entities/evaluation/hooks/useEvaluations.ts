@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllEvaluationByPatientId } from '../api';
+import { EvaluationApiResponse, getAllEvaluationByPatientId } from '../api';
 
 export const useEvaluations = (patientId: number) => {
-  return useQuery({
+  return useQuery<EvaluationApiResponse>({
     queryKey: ['evaluations', patientId],
     queryFn: () => getAllEvaluationByPatientId(patientId),
     staleTime: 1000 * 60 * 5,

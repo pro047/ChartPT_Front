@@ -29,7 +29,7 @@ export const Dropdown = <T,>({
     <Select
       value={value}
       onValueChange={(val) => {
-        const item = options.find((i) => String(getValue(i)) === value);
+        const item = options.find((i) => String(getValue(i)) === val);
         onChange(val, item);
       }}
     >

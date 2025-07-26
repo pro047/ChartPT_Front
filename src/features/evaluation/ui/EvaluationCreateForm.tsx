@@ -1,28 +1,36 @@
 'use client';
 
-import { EvaluationType } from '@/entities';
+import { EvaluationCreateFormType, usePatientStore } from '@/shared';
 import { EvaluationForm } from '@/features';
 import { useState } from 'react';
 import { useCreateEvaluation } from '../hooks/useCreateEvaluations';
+import { toEvaluationPayload } from '../utils';
 
 export const EvaluationCreateForm = () => {
   const { mutate } = useCreateEvaluation();
 
   const [openSuccessDialog, setOpenSuccessDialogAction] = useState(false);
+  const patientId = usePatientStore((state) => state.patientId);
 
-  const onCreateSubmit = async (formData: EvaluationType) => {
-    mutate(
-      { data: formData },
-      {
-        onSuccess: () => {
-          setOpenSuccessDialogAction(true);
-        },
-        onError: (err) => {
-          console.error('[save evaluation error] :', err);
-          throw new Error('Failed save Evaluation');
-        },
-      }
-    );
+  const onCreateSubmit = async (formData: EvaluationCreateFormType) => {
+    console.log('patientId', patientId);
+
+    if (patientId !== null) {
+      console.log('patientID : ', patientId);
+
+      const payload = toEvaluationPayload(formData, patientId);
+      mutate(
+        { data: payload },
+        {
+          onSuccess: () => {
+            setOpenSuccessDialogAction(true);
+          },
+          onError: (err) => {
+            console.error('[save evaluation error] :', err);
+          },
+        }
+      );
+    }
   };
 
   return (

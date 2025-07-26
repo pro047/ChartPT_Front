@@ -4,7 +4,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlanType } from '@/entities';
-import { FormFieldProps } from '@/shared';
+import { ConfirmDialog, FormFieldProps } from '@/shared';
 import { PlanSchema } from '@/entities';
 import {
   Dialog,
@@ -24,8 +24,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 type planUpdateType = {
-  initialData?: PlanType;
-  onSubmitAction?: (data: PlanType) => Promise<void>;
+  targetPlan?: PlanType;
+  openSuccessDialog: boolean;
+  onSubmitAction: (data: PlanType) => Promise<void>;
+  setOpenSuccessDialogAction: (open: boolean) => void;
 };
 
 const defaultValues = {
@@ -37,8 +39,10 @@ const defaultValues = {
 };
 
 export const PlanForm: React.FC<planUpdateType> = ({
-  initialData,
+  targetPlan,
+  openSuccessDialog,
   onSubmitAction,
+  setOpenSuccessDialogAction,
 }) => {
   const form = useForm<PlanType>({
     resolver: zodResolver(PlanSchema),
@@ -48,7 +52,7 @@ export const PlanForm: React.FC<planUpdateType> = ({
   const { close, isOpen, mode } = usePlanContext();
 
   useEffect(() => {
-    form.reset(mode === 'create' ? defaultValues : initialData);
+    form.reset(mode === 'create' ? defaultValues : targetPlan);
   }, [mode]);
 
   const field = useMemo<FormFieldProps<PlanType>[]>(
@@ -82,13 +86,7 @@ export const PlanForm: React.FC<planUpdateType> = ({
         <Form {...form}>
           <form
             className='flex flex-col'
-            onSubmit={form.handleSubmit(async (data) => {
-              if (onSubmitAction) {
-                await onSubmitAction(data);
-              } else {
-                console.warn('onSubmitAction is not defined');
-              }
-            })}
+            onSubmit={form.handleSubmit(onSubmitAction)}
           >
             {field.map((field) => {
               const { id, label, placeholder, type } = field;
@@ -120,6 +118,18 @@ export const PlanForm: React.FC<planUpdateType> = ({
             </Button>
           </form>
         </Form>
+
+        <ConfirmDialog
+          open={openSuccessDialog}
+          title={mode === 'create' ? '추가 성공' : '수정 성공'}
+          cancelText='취소'
+          actionText='확인'
+          onOpenChangeAction={setOpenSuccessDialogAction}
+          onClickAction={() => {
+            setOpenSuccessDialogAction(false);
+            close();
+          }}
+        />
       </DialogContent>
     </Dialog>
   );

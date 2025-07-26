@@ -1,7 +1,7 @@
 import { Instance, PatientInfo } from '@/shared';
 import { PlanType } from '../types';
 
-type PlanApiResponse = {
+export type PlanApiResponse = {
   message: string;
   patient: PatientInfo;
   plans: PlanType[];

@@ -76,6 +76,7 @@
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@types/crypto-js": "^4.2.2",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.15.17",
