@@ -1,6 +1,6 @@
 'use client';
 
-import { EvaluationTargetGridCard } from '@/entities';
+import { EvaluationTargetCard } from '@/entities';
 import {
   ConfirmDialog,
   Container,
@@ -50,12 +50,12 @@ export const EvaluationDetailWidget = () => {
         {patients?.name} 님 {evaluationNumber} 회차 평가 기록
       </Header>
       <Divider />
-      <div className='text-m font-semibold text-muted-foreground my-5'>
+      <div className='text-m font-semibold text-muted-foreground my-5 pl-4'>
         {patients?.name} 님의 {evaluationNumber} 회차 평가 기록입니다
       </div>
       <Divider />
-      <div className='grid grid-cols-2 gap-4 items-stretch'>
-        <EvaluationTargetGridCard
+      <div>
+        <EvaluationTargetCard
           onClickDeleteAction={() => setOpenDeleteAction(true)}
         />
         <EvaluationCreateForm />

@@ -1,6 +1,6 @@
 'use client';
 
-import { EvaluationCreateFormType, usePatientStore } from '@/shared';
+import { FlatEvaluationCreateFormType, usePatientStore } from '@/shared';
 import { EvaluationForm } from '@/features';
 import { useState } from 'react';
 import { useCreateEvaluation } from '../hooks/useCreateEvaluations';
@@ -12,13 +12,14 @@ export const EvaluationCreateForm = () => {
   const [openSuccessDialog, setOpenSuccessDialogAction] = useState(false);
   const patientId = usePatientStore((state) => state.patientId);
 
-  const onCreateSubmit = async (formData: EvaluationCreateFormType) => {
-    console.log('patientId', patientId);
-
+  const onCreateSubmit = async (formData: FlatEvaluationCreateFormType) => {
     if (patientId !== null) {
       console.log('patientID : ', patientId);
 
-      const payload = toEvaluationPayload(formData, patientId);
+      const filterdData = formData.fields.filter(
+        (f) => !(f.regionId === 0 && f.movementId === 0 && f.bodySideId === 0)
+      );
+      const payload = toEvaluationPayload(filterdData, patientId);
       mutate(
         { data: payload },
         {

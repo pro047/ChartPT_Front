@@ -1,24 +1,22 @@
-import { EvaluationUpdateFormType, EvaluationCreateType } from '@/shared';
+import { FlatEvaluationCreateType, EvaluationCreateType } from '@/shared';
 
 export const toEvaluationPayload = (
-  flat: EvaluationUpdateFormType,
+  form: FlatEvaluationCreateType[],
   patientId: number
 ): EvaluationCreateType => ({
   patientId,
-  targets: [
-    {
-      regionId: flat.regionId!,
-      movementId: flat.movementId!,
-      bodySideId: flat.bodySideId!,
-      results: [
-        {
-          rom: flat.rom!,
-          vas: flat.vas!,
-          hx: flat.hx!,
-          sx: flat.sx!,
-          note: flat.note!,
-        },
-      ],
-    },
-  ],
+  targets: form.map((f) => ({
+    regionId: f.regionId,
+    movementId: f.movementId,
+    bodySideId: f.bodySideId,
+    results: [
+      {
+        rom: f.rom,
+        vas: f.vas,
+        hx: f.hx,
+        sx: f.sx,
+        note: f.note,
+      },
+    ],
+  })),
 });
