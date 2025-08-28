@@ -10,7 +10,7 @@ export const targetEvaluationQueryKey = {
   ],
 };
 
-export const useTargetEvaluation = ({
+export const useEvaluationTarget = ({
   patientId,
   evaluationNumber,
 }: {

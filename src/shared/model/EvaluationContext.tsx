@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState } from 'react';
 
-type EvaluationMode = 'create' | 'edit';
+type EvaluationMode = 'create' | 'addTarget' | 'update';
 
 type EvaluationContextType = {
   isOpen: boolean;
@@ -12,6 +12,7 @@ type EvaluationContextType = {
   close: () => void;
   setCreate: () => void;
   setEdit: () => void;
+  setAddTarget: () => void;
   triggerEvalDropdownRefresh: () => void;
 };
 
@@ -31,7 +32,8 @@ export const EvaluationProvider = ({
   const evalOpen = () => setIsOpen(true);
   const close = () => setIsOpen(false);
   const setCreate = () => setMode('create');
-  const setEdit = () => setMode('edit');
+  const setEdit = () => setMode('update');
+  const setAddTarget = () => setMode('addTarget');
   const triggerEvalDropdownRefresh = () => setShouldRefresh((prev) => !prev);
 
   return (
@@ -44,6 +46,7 @@ export const EvaluationProvider = ({
         close,
         setCreate,
         setEdit,
+        setAddTarget,
         triggerEvalDropdownRefresh,
       }}
     >

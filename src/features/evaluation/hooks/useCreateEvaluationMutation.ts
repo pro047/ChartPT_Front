@@ -6,7 +6,7 @@ type CreateEvalparam = {
   data: EvaluationCreateType;
 };
 
-export const useCreateEvaluation = () => {
+export const useCreateEvaluationMutation = () => {
   const queryClient = useQueryClient();
 
   const patientId = usePatientStore((state) => state.patientId);

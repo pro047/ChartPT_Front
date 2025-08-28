@@ -2,10 +2,10 @@
 
 import { IoMdMore } from 'react-icons/io';
 import { Button } from '@/components/ui/button';
-import { useEvaluationContext } from '@/features';
 import {
   Divider,
   EvaluationTargetResponseType,
+  useEvaluationContext,
   useEvaluationStore,
   usePatientStore,
 } from '@/shared';
@@ -16,7 +16,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useTargetEvaluation } from '../hooks/useTargetEvaluation';
+import { useEvaluationTarget } from '../hooks';
+import { MdNoteAdd } from 'react-icons/md';
 
 type Prop = {
   onClickDeleteAction: () => void;
@@ -27,16 +28,17 @@ export const EvaluationTargetCard = ({ onClickDeleteAction }: Prop) => {
   const evaluationNumber = useEvaluationStore(
     (state) => state.evaluationNumber
   );
-  const { evalOpen, setCreate, setEdit } = useEvaluationContext();
+  const setTargetId = useEvaluationStore(
+    (state) => state.setEvaluationTargetId
+  );
+  const { evalOpen, setEdit, setAddTarget } = useEvaluationContext();
 
   if (!patientId || !evaluationNumber) return null;
 
-  const { data, isLoading, error } = useTargetEvaluation({
+  const { data } = useEvaluationTarget({
     patientId,
     evaluationNumber,
   });
-
-  console.log('data', data?.targets);
 
   const targets = data?.targets ?? [];
 
@@ -51,17 +53,30 @@ export const EvaluationTargetCard = ({ onClickDeleteAction }: Prop) => {
     {} as Record<string, EvaluationTargetResponseType[]>
   );
 
-  console.log('grouped', grouped);
-
-  const handleAdd = () => {
-    setCreate();
-    evalOpen();
-  };
-
-  const handleEdit = () => {
+  const handleEdit = (targetId: number) => {
+    setTargetId(targetId);
     setEdit();
     evalOpen();
   };
+
+  const handleAdd = () => {
+    setAddTarget();
+    evalOpen();
+  };
+
+  if (!targets || targets.every((t) => t.region === null)) {
+    return (
+      <div className='text-center py-20 text-muted-foreground'>
+        <MdNoteAdd
+          onClick={handleAdd}
+          className='w-10 h-10 mx-auto mb-3 cursor-pointer'
+          role='button'
+        />
+        <p className='text-lg font-semibold'>등록된 평가가 없어요</p>
+        <p className='text-sm'>평가를 등록해보세요</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -90,19 +105,20 @@ export const EvaluationTargetCard = ({ onClickDeleteAction }: Prop) => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuLabel className='flex justify-center px-0'>
-                            <Button variant='ghost' onClick={handleAdd}>
-                              평가 추가
-                            </Button>
-                          </DropdownMenuLabel>
-                          <DropdownMenuLabel className='flex justify-center px-0'>
-                            <Button variant='ghost' onClick={handleEdit}>
+                            <Button
+                              variant='ghost'
+                              onClick={() => handleEdit(target.targetId)}
+                            >
                               평가 수정
                             </Button>
                           </DropdownMenuLabel>
                           <DropdownMenuLabel className='flex justify-center px-0'>
                             <Button
                               variant='ghost'
-                              onClick={onClickDeleteAction}
+                              onClick={() => {
+                                setTargetId(target.targetId);
+                                onClickDeleteAction();
+                              }}
                             >
                               평가 삭제
                             </Button>

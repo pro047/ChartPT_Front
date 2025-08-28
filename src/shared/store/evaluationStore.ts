@@ -7,9 +7,11 @@ export const useEvaluationStore = create<EvaluationStoreType>()(
   persist(
     (set) => ({
       evaluationNumber: null,
+      evaluationTargetId: null,
       evaluationInfo: null,
       evaluations: [],
       setEvaluationNumber: (value) => set({ evaluationNumber: value }),
+      setEvaluationTargetId: (value) => set({ evaluationTargetId: value }),
       setEvaluationInfo: (info) => set({ evaluationInfo: info }),
       setEvaluations: (list) => set({ evaluations: list }),
       clearEvaluation: () => {

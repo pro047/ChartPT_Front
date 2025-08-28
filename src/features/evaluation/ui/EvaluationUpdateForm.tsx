@@ -1,58 +1,93 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { EvaluationForm } from '@/features';
+import { useEvaluations } from '@/entities';
 import {
-  EvaluationType,
-  getEvaluationByPateintIdAndEvaluationNumber,
-} from '@/entities';
-import { useUpdateEvaluation } from '../hooks';
+  FlatEvaluationUpdateFormType,
+  useEvaluationStore,
+  usePatientStore,
+} from '@/shared';
+import { useUpdateEvaluationMutation } from '../hooks';
+import { toFlatForUpdate, transformUpdateFormToUpdateType } from '../utils';
 
-export const EvaluationUpdateForm = ({
-  params,
-}: {
-  params: { patientId: string; evaluationNumber: string };
-}) => {
-  const [evaluation, setEvaluation] = useState<EvaluationType | null>(null);
-  const [error, setError] = useState<string | null>(null);
+export const EvaluationUpdateForm = () => {
   const [openSuccessDialog, setOpenSuccessDialogAction] = useState(false);
 
-  const router = useRouter();
-  const updated = useUpdateEvaluation();
+  const patientId = usePatientStore((state) => state.patientId);
+  const evaluationNumber = useEvaluationStore(
+    (state) => state.evaluationNumber
+  );
+  const targetId = useEvaluationStore((state) => state.evaluationTargetId);
+
+  if (patientId === null || evaluationNumber === null) {
+    throw new Error(
+      `patientId or evaluation Number is Null at EvaluationUpdateForm : ${patientId} / ${evaluationNumber}`
+    );
+  }
+
+  const { data } = useEvaluations(patientId);
+
+  const evaluation = data?.evaluations.filter(
+    (e) => e.patientId === patientId && e.evaluationNumber === evaluationNumber
+  );
+
+  const targetEvaluation = evaluation
+    ?.flatMap((e) => e.targets)
+    .find((e) => e.targetId === targetId);
+
+  const idRef = useRef<{ targetId: number; resultId: number } | null>(null);
+
+  const flatData = targetEvaluation ? toFlatForUpdate(targetEvaluation) : null;
+
+  console.log('flat data:', flatData);
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const evaluation = await getEvaluationByPateintIdAndEvaluationNumber(
-          Number(params.patientId),
-          Number(params.evaluationNumber)
-        );
-        console.log('data :', evaluation);
-        setEvaluation(evaluation);
-      } catch (err) {
-        console.error('Failed fetch :', err);
-        setError('Failed fetch');
+    if (targetEvaluation) {
+      const results = targetEvaluation.results;
+      idRef.current = {
+        targetId: targetEvaluation.targetId,
+        resultId: results[0].resultId,
+      };
+    }
+  }, [targetEvaluation]);
+
+  const { mutate } = useUpdateEvaluationMutation();
+
+  const onUpdateSubmit = async (updateData: FlatEvaluationUpdateFormType) => {
+    if (updateData.fields.length !== 1) {
+      console.error('updateData.fields.lenght !== 1 at evaluationupdateform');
+      return;
+    }
+
+    const transformed = transformUpdateFormToUpdateType({
+      patientId: patientId,
+      evaluationNumber: evaluationNumber,
+      updateData: updateData,
+      ids: idRef,
+    });
+
+    mutate(
+      { updateData: transformed },
+      {
+        onSuccess: () => {
+          setOpenSuccessDialogAction(true);
+        },
+        onError: (err) => {
+          console.error('update evaluation', err);
+        },
       }
-    };
-    fetch();
-  }, [params]);
-
-  if (error) return <div>{error}</div>;
-  if (!evaluation) return <div>로딩 중..</div>;
-
-  const handleSubmit = async (data: EvaluationType) => {
-    if (!evaluation || !evaluation.evaluationNumber)
-      throw new Error('Not found data or evaluationNumber');
-
-    await updated(evaluation.evaluationNumber, data);
-    router.back();
+    );
   };
+
+  if (!evaluation || !flatData) {
+    return null;
+  }
 
   return (
     <EvaluationForm
-      targetEvaluation={evaluation}
-      onSubmitAction={handleSubmit}
+      targetEvaluation={flatData}
+      onUpdateSubmitAction={onUpdateSubmit}
       openSuccessDialog={openSuccessDialog}
       setOpenSuccessDialogAction={setOpenSuccessDialogAction}
     />

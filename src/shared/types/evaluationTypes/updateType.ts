@@ -23,7 +23,9 @@ export const evaluationUpdateSchema = z.object({
   targets: z.array(evaluationTargetUpdateSchema),
 });
 
-export const flatevaluationUpdateFormSchema = z.object({
+export const flatEvaluationUpdateSchema = z.object({
+  targetId: z.coerce.number().optional(),
+  resultId: z.coerce.number().optional(),
   regionId: z.coerce.number().optional(),
   movementId: z.coerce.number().optional(),
   bodySideId: z.coerce.number().optional(),
@@ -34,13 +36,24 @@ export const flatevaluationUpdateFormSchema = z.object({
   note: z.string().optional(),
 });
 
-export type EvaluationUpdateFormType = z.infer<
-  typeof flatevaluationUpdateFormSchema
->;
-export type EvaluationTargetUpdateType = z.infer<
-  typeof evaluationTargetUpdateSchema
->;
+export const flatEvaluationUpdateFormSchema = z.object({
+  fields: z.array(flatEvaluationUpdateSchema),
+});
+
 export type EvaluationResultUpdateType = z.infer<
   typeof evaluationResultUpdateSchema
 >;
+
+export type EvaluationTargetUpdateType = z.infer<
+  typeof evaluationTargetUpdateSchema
+>;
+
 export type EvaluationUpdateType = z.infer<typeof evaluationUpdateSchema>;
+
+export type FlatEvaluationUpdateType = z.infer<
+  typeof flatEvaluationUpdateSchema
+>;
+
+export type FlatEvaluationUpdateFormType = z.infer<
+  typeof flatEvaluationUpdateFormSchema
+>;

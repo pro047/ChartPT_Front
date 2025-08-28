@@ -10,7 +10,7 @@ const config: Config = {
     '^@shared/(.*)$': '<rootDir>/src/shared/$1',
   },
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
   },
   testMatch: ['**/__test__/**/*.test.ts', '**/*.test.ts'],
   verbose: true,

@@ -5,3 +5,4 @@ export * from './evaluationTypes';
 export * from './planType';
 export * from './formFieldType';
 export * from './todoType';
+export * from './chartType';

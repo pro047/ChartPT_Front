@@ -1,11 +1,19 @@
-import { Header, PatientInfo } from '@/shared';
+'use client';
+
+import { Header, PatientInfo, usePatientStore } from '@/shared';
 import { useEffect, useState } from 'react';
 import { getPatientInfoById } from '../api';
 
-export const PatientInfoHeader = ({ patientId }: { patientId: number }) => {
+export const PatientInfoHeader = () => {
   const [patients, setPatients] = useState<PatientInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<String | null>(null);
+
+  const patientId = usePatientStore((state) => state.patientId);
+
+  if (patientId === null) {
+    throw new Error('PatientId is Null at PatientHeader');
+  }
 
   useEffect(() => {
     const fetch = async () => {

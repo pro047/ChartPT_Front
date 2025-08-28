@@ -1,3 +1,5 @@
+'use client';
+
 import { FlatEvaluationCreateType } from '@/shared';
 import { useMemo, useRef, useState } from 'react';
 import { UseFormSetValue } from 'react-hook-form';

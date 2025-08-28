@@ -35,6 +35,19 @@ export const flatEvaluationCreateFormSchema = z.object({
   fields: z.array(flatEvaluationCreateSchema),
 });
 
+export const evaluationTargetCreateWithEvaluationNumberSchema = z.object({
+  regionId: z.number(),
+  movementId: z.number(),
+  bodySideId: z.number(),
+  results: z.array(evaluationResultCreateSchema),
+});
+
+export const evaluationCreateWithEvaluationNumberSchema = z.object({
+  patientId: z.number(),
+  evaluationNumber: z.number(),
+  targets: z.array(evaluationTargetCreateWithEvaluationNumberSchema),
+});
+
 export type EvaluationResultCreateType = z.infer<
   typeof evaluationResultCreateSchema
 >;
@@ -51,4 +64,12 @@ export type FlatEvaluationCreateType = z.infer<
 
 export type FlatEvaluationCreateFormType = z.infer<
   typeof flatEvaluationCreateFormSchema
+>;
+
+export type EvaluationTargetCreateWithEvaluationNumberType = z.infer<
+  typeof evaluationTargetCreateWithEvaluationNumberSchema
+>;
+
+export type EvaluationCreateWithEvaluationNumberType = z.infer<
+  typeof evaluationCreateWithEvaluationNumberSchema
 >;

@@ -7,3 +7,4 @@ export * from './dashboard';
 export * from './evaluation';
 export * from './more';
 export * from './user';
+export * from './lineChart';

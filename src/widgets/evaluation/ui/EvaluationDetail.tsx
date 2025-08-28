@@ -12,8 +12,7 @@ import {
 } from '@/shared';
 import { EvaluationCreateForm, EvaluationUpdateForm } from '@/features';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useDeleteEvaluataion } from '@/features/evaluation/hooks/useDeleteEvaluations';
+import { useDeleteEvaluationTarget } from '@/features';
 
 export const EvaluationDetailWidget = () => {
   const [openDelete, setOpenDeleteAction] = useState(false);
@@ -24,18 +23,21 @@ export const EvaluationDetailWidget = () => {
   const evaluationNumber = useEvaluationStore(
     (state) => state.evaluationNumber
   );
+  const evaluationTargetId = useEvaluationStore(
+    (state) => state.evaluationTargetId
+  );
 
-  const { mutate } = useDeleteEvaluataion();
-  const router = useRouter();
+  const { mutate } = useDeleteEvaluationTarget();
 
-  if (!hydrated || !patientId || !evaluationNumber) return null;
+  if (!hydrated || !patientId || !evaluationNumber || !evaluationTargetId)
+    return null;
 
   const handleDelete = async () => {
     mutate(
-      { patientId, evaluationNumber },
+      { patientId, evaluationNumber, evaluationTargetId },
       {
         onSuccess: () => {
-          router.push(`/patient/${patientId}`);
+          console.log('evaluationTarget deleted successed');
         },
         onError: (err) => {
           console.error('[delete evaluation error] :', err);
@@ -59,12 +61,7 @@ export const EvaluationDetailWidget = () => {
           onClickDeleteAction={() => setOpenDeleteAction(true)}
         />
         <EvaluationCreateForm />
-        <EvaluationUpdateForm
-          params={{
-            patientId: String(patientId),
-            evaluationNumber: String(evaluationNumber),
-          }}
-        />
+        <EvaluationUpdateForm />
 
         <ConfirmDialog
           open={openDelete}

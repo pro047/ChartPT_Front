@@ -3,3 +3,4 @@ export * from './evaluation';
 export * from './plan';
 export * from './dashboard';
 export * from './user';
+export * from './lineChart';

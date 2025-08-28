@@ -1,19 +1,17 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  EvaluationDropDown,
-  PlanDropDown,
-  useEvaluationContext,
-  usePlanContext,
-} from '@/features';
+import { EvaluationDropDown, PlanDropDown, usePlanContext } from '@/features';
+import { usePatientStore, useEvaluationContext } from '@/shared';
 
-export const PatientEvalAndPlanSelect = ({
-  patientId,
-}: {
-  patientId: number;
-}) => {
-  const { evalOpen } = useEvaluationContext();
+export const PatientEvalAndPlanSelect = () => {
+  const { evalOpen, setCreate } = useEvaluationContext();
   const { planOpen } = usePlanContext();
+
+  const patientId = usePatientStore((state) => state.patientId);
+
+  if (patientId === null) {
+    throw new Error('PatientId is Null at PatientEvalAndPlanSelcet');
+  }
 
   return (
     <Card className='my-5'>
@@ -22,7 +20,13 @@ export const PatientEvalAndPlanSelect = ({
       </CardHeader>
       <EvaluationDropDown patientId={patientId} />
       <PlanDropDown patientId={patientId} />
-      <Button className='mx-6' onClick={evalOpen}>
+      <Button
+        className='mx-6'
+        onClick={() => {
+          setCreate();
+          evalOpen();
+        }}
+      >
         평가 추가
       </Button>
       <Button className='mx-6' onClick={planOpen}>

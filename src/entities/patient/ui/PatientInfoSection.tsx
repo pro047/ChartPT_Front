@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import { getPatientInfoById } from '../api';
-import { PatientInfo } from '@/shared';
+import { PatientInfo, usePatientStore } from '@/shared';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 
-export const PatientInfoSection = ({ patientId }: { patientId: number }) => {
+export const PatientInfoSection = () => {
   const [patients, setPatients] = useState<PatientInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<String | null>(null);
+
+  const patientId = usePatientStore((state) => state.patientId);
+
+  if (patientId === null) {
+    throw new Error('PaitientId is Null at PatientinfoSection');
+  }
 
   useEffect(() => {
     const fetch = async () => {

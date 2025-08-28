@@ -15,6 +15,8 @@ export const EvaluationDropDown = ({ patientId }: { patientId: number }) => {
   const [selectedEvaluationNumber, setSelecteEvaluationNumber] =
     useState<string>('');
 
+  console.log('data', data);
+
   const evaluations = data?.evaluations ?? [];
 
   const router = useRouter();

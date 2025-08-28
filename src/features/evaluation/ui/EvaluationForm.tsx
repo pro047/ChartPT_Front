@@ -4,16 +4,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  useEvaluationContext,
   FormFieldProps,
   ConfirmDialog,
-  EvaluationUpdateFormType,
+  FlatEvaluationUpdateFormType,
   EvaluationTargetCreateType,
   EvaluationResultCreateType,
   FlatEvaluationCreateFormType,
   FlatEvaluationCreateType,
   flatEvaluationCreateFormSchema,
+  FlatEvaluationUpdateType,
 } from '@/shared';
-import { useEvaluationContext } from '../model';
 import {
   Dialog,
   DialogContent,
@@ -42,9 +43,10 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useArrayField } from '../hooks';
 
 type EvaluationFormType = {
-  targetEvaluation?: EvaluationUpdateFormType;
+  targetEvaluation?: FlatEvaluationUpdateType;
   openSuccessDialog: boolean;
-  onSubmitAction: (data: FlatEvaluationCreateFormType) => Promise<void>;
+  onCreateSubmitAction?: (data: FlatEvaluationCreateFormType) => Promise<void>;
+  onUpdateSubmitAction?: (data: FlatEvaluationUpdateFormType) => Promise<void>;
   setOpenSuccessDialogAction: (open: boolean) => void;
 };
 
@@ -63,8 +65,9 @@ const defaultValues: FlatEvaluationCreateType = {
 };
 export const EvaluationForm: React.FC<EvaluationFormType> = ({
   targetEvaluation,
-  onSubmitAction,
   openSuccessDialog,
+  onUpdateSubmitAction,
+  onCreateSubmitAction,
   setOpenSuccessDialogAction,
 }) => {
   const form = useForm<FlatEvaluationCreateFormType>({
@@ -82,11 +85,23 @@ export const EvaluationForm: React.FC<EvaluationFormType> = ({
 
   useEffect(() => {
     form.reset(
-      mode === 'create'
+      mode === 'create' || mode === 'addTarget'
         ? { fields: [defaultValues] }
         : { fields: [targetEvaluation] }
     );
-  }, [mode]);
+  }, [mode, targetEvaluation]);
+
+  const handleSubmit = form.handleSubmit((data) => {
+    switch (mode) {
+      case 'create':
+      case 'addTarget':
+        onCreateSubmitAction?.(data as FlatEvaluationCreateFormType);
+        break;
+      case 'update':
+        onUpdateSubmitAction?.(data as FlatEvaluationUpdateFormType);
+        break;
+    }
+  });
 
   const targetFields = useMemo<FormFieldProps<TargetFieldType>[]>(
     () => [
@@ -135,10 +150,10 @@ export const EvaluationForm: React.FC<EvaluationFormType> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      <DialogContent>
+      <DialogContent forceMount>
         <DialogHeader>
           <DialogTitle>
-            {mode === 'create'
+            {mode === 'create' || 'addTarget'
               ? `평가 추가 - ${currentIndex + 1}`
               : '평가 수정'}
           </DialogTitle>
@@ -151,14 +166,7 @@ export const EvaluationForm: React.FC<EvaluationFormType> = ({
             {fields.map((_, i) => (
               <div key={i} className='w-full shrink-0'>
                 <Form {...form}>
-                  <form
-                    className='flex flex-col'
-                    onSubmit={(e) => {
-                      console.log('form submitted');
-                      e.preventDefault();
-                      form.handleSubmit(onSubmitAction)(e);
-                    }}
-                  >
+                  <form className='flex flex-col px-1' onSubmit={handleSubmit}>
                     {targetFields.map(({ id, label, placeholder }) => (
                       <FormField
                         key={`fields.${i}.${id}`}
@@ -236,7 +244,11 @@ export const EvaluationForm: React.FC<EvaluationFormType> = ({
 
         <ConfirmDialog
           open={openSuccessDialog}
-          title={mode === 'create' ? '추가 성공' : '수정 성공'}
+          title={
+            mode === 'create' || mode === 'addTarget'
+              ? '추가 성공'
+              : '수정 성공'
+          }
           cancelText='취소'
           actionText='확인'
           onOpenChangeAction={setOpenSuccessDialogAction}

@@ -5,3 +5,4 @@ export * from './utils';
 export * from './hooks';
 export * from './component';
 export * from './theme';
+export * from './model';
