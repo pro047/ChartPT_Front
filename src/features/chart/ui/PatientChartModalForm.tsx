@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { usePathname } from 'next/navigation';
 import {
   Dialog,
@@ -32,20 +31,12 @@ import { FormFieldProps } from '../types';
 import { useSavePatient } from '../hooks';
 import { usePatientChartContext } from '../model';
 import { usePatientContext } from '@/entities';
-import { ConfirmDialog, usePatientStore } from '@/shared';
-
-const chartSchema = z.object({
-  userId: z.number().optional(),
-  name: z.string().nonempty('이름은 필수항목입니다'),
-  gender: z.enum(['male', 'female']),
-  age: z.coerce.number().min(1, { message: '나이는 필수항목입니다' }),
-  firstVisit: z.string().refine((val) => !Number.isNaN(Date.parse(val)), {
-    message: '유효한 날짜 형식이어야 합니다',
-  }),
-  occupation: z.string(),
-});
-
-type ChartSchemaType = z.infer<typeof chartSchema>;
+import {
+  chartSchema,
+  ChartSchemaType,
+  ConfirmDialog,
+  usePatientStore,
+} from '@/shared';
 
 export const PatientChartModalForm: React.FC = () => {
   const form = useForm<ChartSchemaType>({
@@ -81,7 +72,7 @@ export const PatientChartModalForm: React.FC = () => {
 
   const onSubmit = async (formData: ChartSchemaType) => {
     try {
-      const firstVisitDate = new Date(formData.firstVisit);
+      const firstVisitDate = String(new Date(formData.firstVisit));
       const patientId = await savePatient({
         ...formData,
         firstVisit: firstVisitDate,
@@ -96,6 +87,7 @@ export const PatientChartModalForm: React.FC = () => {
         refetch();
         triggerRefresh();
       }
+      console.log('new patient :', newPatientId);
     } catch (err) {
       console.error('[save patient chart error] :', err);
       toast.error('환자 저장에 실패했습니다');

@@ -81,9 +81,14 @@ export const EvaluationForm: React.FC<EvaluationFormType> = ({
 
   const { fields, currentIndex, goNext, goPrev } =
     useArrayField<FlatEvaluationCreateType>([defaultValues]);
+
   const { close, isOpen, mode } = useEvaluationContext();
 
   useEffect(() => {
+    setBodySidesOptions;
+    setMovementOptions;
+    setRegionOptions;
+
     form.reset(
       mode === 'create' || mode === 'addTarget'
         ? { fields: [defaultValues] }

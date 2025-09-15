@@ -40,6 +40,10 @@ export const ChangePasswordForm = () => {
     }
   };
 
+  if (loading) {
+    console.log('loading');
+  }
+
   return (
     <Card>
       <CardHeader>

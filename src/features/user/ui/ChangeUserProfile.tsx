@@ -71,6 +71,10 @@ export const ChangeUserProfile = () => {
     { id: 'hospital', label: '병원', type: 'text', placeholder: '병원' },
   ];
 
+  if (loading) {
+    console.log('loading');
+  }
+
   return (
     <Card>
       <CardHeader>

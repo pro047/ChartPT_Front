@@ -1,5 +1,4 @@
-import { Instance } from '@/shared';
-import { ChartSchemaType } from '../types';
+import { ChartSchemaType, Instance } from '@/shared';
 
 export const saveChart = async (data: ChartSchemaType): Promise<number> => {
   const result = await Instance.post('/patient/chart', data);

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { usePlanContext } from '@/features';
 import { PlanResponseType, usePatientStore, usePlanStore } from '@/shared';
-import { getPlanByPatientIdAndPlanNumber } from '../api';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
