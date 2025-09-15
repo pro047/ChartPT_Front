@@ -1,9 +1,8 @@
-import { PlanType } from '@/entities';
-import { Instance } from '@/shared';
+import { Instance, PlanCreateType, PlanUpdateType } from '@/shared';
 
 export const savePlan = async (
   patientId: number,
-  data: PlanType
+  data: PlanCreateType
 ): Promise<number> => {
   try {
     console.log('patientId :', patientId);
@@ -16,11 +15,15 @@ export const savePlan = async (
   }
 };
 
-export const updatePlan = async (
-  patientId: number,
-  planNumber: number,
-  updateData: Partial<PlanType>
-): Promise<void> => {
+export const updatePlan = async ({
+  patientId,
+  planNumber,
+  updateData,
+}: {
+  patientId: number;
+  planNumber: number;
+  updateData: PlanUpdateType;
+}): Promise<void> => {
   try {
     await Instance.put(`/patient/${patientId}/plan/${planNumber}`, updateData);
   } catch (err) {

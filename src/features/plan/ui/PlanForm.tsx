@@ -3,9 +3,14 @@
 import React, { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PlanType } from '@/entities';
-import { ConfirmDialog, FormFieldProps } from '@/shared';
-import { PlanSchema } from '@/entities';
+import {
+  ConfirmDialog,
+  FormFieldProps,
+  PlanCreateWithoutPatientIdType,
+  PlanCreateType,
+  planCreateWithoutPatientIdSchema,
+  PlanUpdateType,
+} from '@/shared';
 import {
   Dialog,
   DialogContent,
@@ -24,13 +29,14 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 type planUpdateType = {
-  targetPlan?: PlanType;
+  targetPlan?: PlanUpdateType;
   openSuccessDialog: boolean;
-  onSubmitAction: (data: PlanType) => Promise<void>;
+  onCreateSubmitAction?: (data: PlanCreateType) => Promise<void>;
+  onUpdateSubmitAction?: (data: PlanUpdateType) => Promise<void>;
   setOpenSuccessDialogAction: (open: boolean) => void;
 };
 
-const defaultValues = {
+const defaultValues: PlanCreateWithoutPatientIdType = {
   stg: '',
   ltg: '',
   treatmentPlan: '',
@@ -41,11 +47,12 @@ const defaultValues = {
 export const PlanForm: React.FC<planUpdateType> = ({
   targetPlan,
   openSuccessDialog,
-  onSubmitAction,
+  onCreateSubmitAction,
+  onUpdateSubmitAction,
   setOpenSuccessDialogAction,
 }) => {
-  const form = useForm<PlanType>({
-    resolver: zodResolver(PlanSchema),
+  const form = useForm<PlanCreateWithoutPatientIdType>({
+    resolver: zodResolver(planCreateWithoutPatientIdSchema),
     defaultValues: defaultValues,
   });
 
@@ -53,9 +60,18 @@ export const PlanForm: React.FC<planUpdateType> = ({
 
   useEffect(() => {
     form.reset(mode === 'create' ? defaultValues : targetPlan);
-  }, [mode]);
+  }, [mode, targetPlan]);
 
-  const field = useMemo<FormFieldProps<PlanType>[]>(
+  console.log('create submit action:', onCreateSubmitAction);
+  console.log('update submit action:', onUpdateSubmitAction);
+
+  const handleSubmit = form.handleSubmit((data) => {
+    mode === 'create'
+      ? onCreateSubmitAction?.(data as PlanCreateType)
+      : onUpdateSubmitAction?.(data as PlanUpdateType);
+  });
+
+  const field = useMemo<FormFieldProps<PlanCreateWithoutPatientIdType>[]>(
     () => [
       { id: 'stg', label: 'STG', placeholder: 'STG' },
       { id: 'ltg', label: 'LTG', placeholder: 'LTG' },
@@ -84,10 +100,7 @@ export const PlanForm: React.FC<planUpdateType> = ({
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            className='flex flex-col'
-            onSubmit={form.handleSubmit(onSubmitAction)}
-          >
+          <form className='flex flex-col' onSubmit={handleSubmit}>
             {field.map((field) => {
               const { id, label, placeholder, type } = field;
 

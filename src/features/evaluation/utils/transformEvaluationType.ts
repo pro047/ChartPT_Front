@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   FlatEvaluationCreateType,
   EvaluationCreateType,
@@ -6,10 +7,7 @@ import {
   FlatEvaluationUpdateType,
   EvaluationTargetResponseType,
   EvaluationCreateWithEvaluationNumberType,
-  EvaluationResponseType,
 } from '@/shared';
-import React from 'react';
-import { Eval } from '../model';
 
 export const toEvaluationPayload = (
   form: FlatEvaluationCreateType[],
@@ -136,30 +134,3 @@ export const toFlatForAddTarget = (
   sx: '',
   note: '',
 });
-
-export const toEvalFromResponse = (data: EvaluationResponseType): Eval[] => {
-  const targets = data.targets;
-
-  const targetResponse = [];
-
-  for (const target of targets) {
-    for (const result of target.results) {
-      const toPushResults = {
-        regionId: target.regionId,
-        movementId: target.movementId,
-        bodySideId: target.bodySideId,
-        rom: result.rom,
-        vas: result.vas,
-      };
-
-      targetResponse.push(toPushResults);
-    }
-  }
-
-  return [
-    {
-      evaluationNumber: data.evaluationNumber,
-      targets: targetResponse,
-    },
-  ];
-};

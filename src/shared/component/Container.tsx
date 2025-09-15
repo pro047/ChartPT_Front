@@ -1,9 +1,14 @@
-import React, { ReactNode } from 'react';
+import React, { HTMLAttributes, ReactNode } from 'react';
 
-interface Prop {
+interface Prop extends HTMLAttributes<HTMLElement> {
   children: ReactNode;
 }
 
-export const Container = ({ children }: Prop) => (
-  <main className='max-w-5xl mx-auto p-8 min-h-screen'>{children}</main>
+export const Container = ({ children, className, ...props }: Prop) => (
+  <main
+    className={`max-w-5xl mx-auto p-8 min-h-screen ${className}`}
+    {...props}
+  >
+    {children}
+  </main>
 );

@@ -7,8 +7,8 @@ export type SingleLineResponse = { data: SinglePoint[] };
 
 export type MultiLineResponse = {
   x: number;
-  rom: number | null;
-  vas: number | null;
+  rom: number | undefined;
+  vas: number | undefined;
   bodyRegionId: number;
   movementId: number;
   bodySideId: number;

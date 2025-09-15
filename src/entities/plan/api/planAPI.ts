@@ -1,10 +1,7 @@
-import { Instance, PatientInfo } from '@/shared';
-import { PlanType } from '../types';
+import { Instance, PlanResponseType } from '@/shared';
 
 export type PlanApiResponse = {
-  message: string;
-  patient: PatientInfo;
-  plans: PlanType[];
+  plans: PlanResponseType[];
 };
 
 export const getAllplansByPatientId = async (
@@ -14,6 +11,8 @@ export const getAllplansByPatientId = async (
 
   try {
     const result = await Instance.get(`/patient/${patientId}`);
+    console.log('getallplans :', result);
+
     return result.data;
   } catch (err) {
     console.error('[get all plan error] :', err);
@@ -24,7 +23,7 @@ export const getAllplansByPatientId = async (
 export const getPlanByPatientIdAndPlanNumber = async (
   patientId: number,
   planNumber: number
-): Promise<PlanType> => {
+): Promise<PlanResponseType> => {
   try {
     const result = await Instance.get(
       `/patient/${patientId}/plan/${planNumber}`

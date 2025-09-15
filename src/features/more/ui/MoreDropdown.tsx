@@ -3,9 +3,9 @@
 import { usePatientChartContext } from '@/features/chart';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { RiAccountCircleLine } from 'react-icons/ri';
 import { ConfirmDialog, ToggleAnimation } from '@/shared';
 import { logout } from '@/features/auth';
+import { User } from 'lucide-react';
 
 export const MoreDropdown = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -35,7 +35,7 @@ export const MoreDropdown = () => {
         onClick={() => setOpenMenu((prev) => !prev)}
         className='p-2 rounded-full hover:bg-accent/50'
       >
-        <RiAccountCircleLine className='text-2xl' />
+        <User className='text-2xl' />
       </button>
 
       {openMenu && (

@@ -40,8 +40,6 @@ export const EvaluationUpdateForm = () => {
 
   const flatData = targetEvaluation ? toFlatForUpdate(targetEvaluation) : null;
 
-  console.log('flat data:', flatData);
-
   useEffect(() => {
     if (targetEvaluation) {
       const results = targetEvaluation.results;

@@ -1,49 +1,54 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { PlanType } from '@/entities';
-import { useRouter } from 'next/navigation';
-import { useUpdatePlan } from '../hooks';
-import { getPlanByPatientIdAndPlanNumber } from '@/entities/plan/api';
+import { useState } from 'react';
+import { useUpdatePlanMutation } from '../hooks';
 import { PlanForm } from './PlanForm';
+import { PlanUpdateType, usePatientStore, usePlanStore } from '@/shared';
+import { useUpdatePlan } from '@/entities';
 
-export const PlanUpdateForm = ({
-  params,
-}: {
-  params: { patientId: string; planNumber: string };
-}) => {
-  const [plan, setPlan] = useState<PlanType | null>(null);
-  const [error, setError] = useState<string | null>(null);
+export const PlanUpdateForm = () => {
+  const [openSuccessDialog, setOpenSuccessDialogAction] = useState(false);
 
-  const router = useRouter();
-  const updated = useUpdatePlan();
+  const patientId = usePatientStore((state) => state.patientId);
+  const planNumber = usePlanStore((state) => state.planNumber);
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const data = await getPlanByPatientIdAndPlanNumber(
-          Number(params.patientId),
-          Number(params.planNumber)
-        );
-        setPlan(data);
-      } catch (err) {
-        console.error('Failed fetch plan :', err);
-        setError('Failed fetch plan');
+  if (!patientId || !planNumber) {
+    throw new Error(
+      `patientId or plan number is null at plan update form : ${patientId} / ${planNumber}`
+    );
+  }
+
+  const { data } = useUpdatePlan(patientId, planNumber);
+
+  const { mutate } = useUpdatePlanMutation();
+
+  const onUpdateSubmit = async (updateData: PlanUpdateType) => {
+    console.log('update!');
+
+    if (!updateData) {
+      console.error('Not Found plan updateDta');
+      return;
+    }
+
+    mutate(
+      { updateData: updateData },
+      {
+        onSuccess: () => {
+          setOpenSuccessDialogAction(true);
+        },
+        onError: (err) => {
+          console.error('update plan', err);
+        },
       }
-    };
-    fetch();
-  }, [params]);
-
-  if (error) return <div>{error}</div>;
-  if (!plan) return <div>로딩 중..</div>;
-
-  const handleSubmit = async (data: PlanType) => {
-    if (!plan || !plan.planNumber)
-      throw new Error('Not found data or planNumber');
-
-    await updated(plan.planNumber, data);
-    router.back();
+    );
   };
 
-  return <PlanForm initialData={plan} onSubmitAction={handleSubmit} />;
+  return (
+    <PlanForm
+      targetPlan={data}
+      onUpdateSubmitAction={onUpdateSubmit}
+      openSuccessDialog={openSuccessDialog}
+      setOpenSuccessDialogAction={setOpenSuccessDialogAction}
+    />
+  );
 };

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePlanContext } from '@/features';
-import { usePatientStore, usePlanStore } from '@/shared';
+import { PlanResponseType, usePatientStore, usePlanStore } from '@/shared';
 import { getPlanByPatientIdAndPlanNumber } from '../api';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -13,45 +13,28 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { IoMdMore } from 'react-icons/io';
+import { useUpdatePlan } from '../hooks';
 
 type Prop = {
   onClickDeleteAction: () => void;
 };
 
 export const PlanInfoSection = ({ onClickDeleteAction }: Prop) => {
-  const [plan, setPlan] = useState<any>(null);
+  const [plan, setPlan] = useState<PlanResponseType | undefined>(undefined);
 
   const patientId = usePatientStore((state) => state.patientId);
   const planNumber = usePlanStore((state) => state.planNumber);
 
-  const { planOpen, setCreate, setEdit } = usePlanContext();
+  const { planOpen, setEdit } = usePlanContext();
+
+  if (!patientId || !planNumber)
+    throw new Error('plan info section : not found patientId, planNumber');
+
+  const { data } = useUpdatePlan(patientId, planNumber);
 
   useEffect(() => {
-    if (!patientId || !planNumber) return;
-
-    const fetch = async () => {
-      try {
-        if (!patientId || !planNumber)
-          throw new Error('Invalid patientId or planNumber');
-
-        const plan = await getPlanByPatientIdAndPlanNumber(
-          patientId,
-          planNumber
-        );
-        setPlan(plan);
-      } catch (err) {
-        console.error('환자 정보 조회 중 에러 발생', err);
-      }
-    };
-    fetch();
-  }, [patientId, planNumber]);
-
-  if (!patientId || !planNumber) return null;
-
-  const handleAdd = () => {
-    setCreate();
-    planOpen();
-  };
+    setPlan(data);
+  }, [data]);
 
   const handleEdit = () => {
     setEdit();
@@ -79,11 +62,6 @@ export const PlanInfoSection = ({ onClickDeleteAction }: Prop) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel className='flex justify-center px-0'>
-              <Button variant='ghost' onClick={handleAdd}>
-                계획 추가
-              </Button>
-            </DropdownMenuLabel>
-            <DropdownMenuLabel className='flex justify-center px-0'>
               <Button variant='ghost' onClick={handleEdit}>
                 계획 수정
               </Button>
@@ -100,25 +78,29 @@ export const PlanInfoSection = ({ onClickDeleteAction }: Prop) => {
       <div className='mx-6'>
         <div className='grid grid-cols-2 space-y-3 text-sm tracking-wide'>
           <div>
-            <div className='font-medium text-muted-foreground'>Region</div>
+            <div className='font-medium text-muted-foreground'>STG</div>
             <div>{stg !== '' ? stg : '정보가 없습니다'}</div>
           </div>
           <div>
-            <div className='font-medium text-muted-foreground'>Action</div>
+            <div className='font-medium text-muted-foreground'>LTG</div>
             <div>{ltg !== '' ? ltg : '정보가 없습니다'}</div>
           </div>
           <div>
-            <div className='font-medium text-muted-foreground'>ROM</div>
+            <div className='font-medium text-muted-foreground'>
+              Treatment Plan
+            </div>
             <div>
               {treatmentPlan !== '' ? treatmentPlan : '정보가 없습니다'}
             </div>
           </div>
           <div>
-            <div className='font-medium text-muted-foreground'>VAS</div>
+            <div className='font-medium text-muted-foreground'>
+              Exercise Plan
+            </div>
             <div>{exercisePlan !== '' ? exercisePlan : '정보가 없습니다'}</div>
           </div>
           <div>
-            <div className='font-medium text-muted-foreground'>Hx</div>
+            <div className='font-medium text-muted-foreground'>Homework</div>
             <div>{homework !== '' ? homework : '정보가 없습니다'}</div>
           </div>
         </div>

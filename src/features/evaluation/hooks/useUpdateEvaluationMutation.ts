@@ -32,7 +32,7 @@ export const useUpdateEvaluationMutation = () => {
     },
     onSuccess: () => {
       if (patientId === null || evaluationNumber === null) {
-        throw new Error('Invalid data at useupdateevaluationmutation onsucess');
+        throw new Error('Invalid data at useUpdateEvaluationMutation onSucess');
       }
       const keysToInvalidate = [
         ['evaluations', patientId],

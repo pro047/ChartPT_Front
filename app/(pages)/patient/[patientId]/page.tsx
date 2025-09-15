@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { PatientDetailWidget } from '@/widgets/patient';
+import { PatientDetailWidget } from '@/widgets';
 import { useParams } from 'next/navigation';
 
 export default function PatientDetailPage() {

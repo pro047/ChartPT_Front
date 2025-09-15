@@ -2,27 +2,36 @@
 
 import { MultiLineResponse } from '@/shared';
 
+export type SelectorSelection = {
+  regionId?: number;
+  movementId?: number;
+  bodySideId?: number;
+};
+
+export type SelectorOptionDto = {
+  regions: Array<{ id: number; label: string }>;
+  movements: Map<number, { id: number; label: string }[]>;
+  bodySides: Map<string, { id: number; label: string }[]>;
+};
+
+type ChartSeriesPoints = {
+  x: number;
+  rom: number | undefined;
+  vas: number | undefined;
+};
+export type ChartSeries = {
+  key: string;
+  data: ChartSeriesPoints[];
+};
 interface CascadingRepository {
-  getRegions(): Array<{ key: number; label: string }>;
-  getMovements(regionId: number): Array<{ key: number; label: string }>;
-  getBodySides(
-    regionId: number,
-    movementId: number
-  ): Array<{ key: number; label: string }>;
+  getSelectorOptions(): SelectorOptionDto;
+  buildChartSeries(selection: Required<SelectorSelection>): ChartSeries[];
 }
 
 export class CachedLineRepository implements CascadingRepository {
-  private regions: Array<{ key: number; label: string }> = [];
-  private movementIndex: Map<number, Array<{ key: number; label: string }>> =
-    new Map();
-  private bodySideIndex: Map<string, Array<{ key: number; label: string }>> =
-    new Map();
+  constructor(private rows: MultiLineResponse[]) {}
 
-  constructor(private rows: MultiLineResponse[]) {
-    this.buildIndexes();
-  }
-
-  private buildIndexes() {
+  getSelectorOptions(): SelectorOptionDto {
     const regionMap = new Map<number, string>();
     const movementMap = new Map<number, Map<number, string>>();
     const bodySideMap = new Map<string, Map<number, string>>();
@@ -40,40 +49,44 @@ export class CachedLineRepository implements CascadingRepository {
       bodySideMap.get(comboKey)?.set(row.bodySideId, row.bodySide);
     }
 
-    this.regions = Array.from(regionMap.entries()).map(([key, label]) => ({
-      key,
-      label,
-    }));
-
-    for (const [regionId, mvMap] of movementMap.entries()) {
-      const list = Array.from(mvMap.entries()).map(([key, label]) => ({
-        key,
-        label,
-      }));
-      this.movementIndex.set(regionId, list);
-    }
-
-    for (const [comboKey, bsMap] of bodySideMap.entries()) {
-      const list = Array.from(bsMap.entries()).map(([key, label]) => ({
-        key,
-        label,
-      }));
-      this.bodySideIndex.set(comboKey, list);
-    }
+    return {
+      regions: [...regionMap.entries()].map(([id, label]) => ({ id, label })),
+      movements: new Map(
+        [...movementMap.entries()].map(([regionId, mvMap]) => [
+          regionId,
+          [...mvMap.entries()].map(([id, label]) => ({ id, label })),
+        ])
+      ),
+      bodySides: new Map(
+        [...bodySideMap.entries()].map(([key, bsmap]) => [
+          key,
+          [...bsmap.entries()].map(([id, label]) => ({ id, label })),
+        ])
+      ),
+    };
   }
 
-  getRegions(): Array<{ key: number; label: string }> {
-    return this.regions;
-  }
+  buildChartSeries(selection: SelectorSelection): ChartSeries[] {
+    const { regionId, movementId, bodySideId } = selection;
 
-  getMovements(regionId: number): Array<{ key: number; label: string }> {
-    return this.movementIndex.get(regionId) ?? [];
-  }
+    const filtered = this.rows.filter(
+      (r) =>
+        r.bodyRegionId === regionId &&
+        r.movementId === movementId &&
+        r.bodySideId === bodySideId
+    );
 
-  getBodySides(
-    regionId: number,
-    movementId: number
-  ): Array<{ key: number; label: string }> {
-    return this.bodySideIndex.get(`${regionId} : ${movementId}`) ?? [];
+    const sorted = [...filtered].sort((a, b) => a.x - b.x);
+
+    return [
+      {
+        key: 'rom',
+        data: sorted.map((r) => ({ x: r.x, rom: r.rom, vas: undefined })),
+      },
+      {
+        key: 'vas',
+        data: sorted.map((r) => ({ x: r.x, rom: undefined, vas: r.vas })),
+      },
+    ];
   }
 }

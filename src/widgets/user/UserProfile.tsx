@@ -20,7 +20,7 @@ export const UserProfileWidget = () => {
     router.push('/');
   };
   return (
-    <Container>
+    <Container className='px-10'>
       <UserProfile />
       <div className='flex flex-col space-y-3'>
         <Button asChild>

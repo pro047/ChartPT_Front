@@ -1,2 +1,2 @@
-export * from './useCreatePlan';
-export * from './useUpdatePlan';
+export * from './useCreatePlanMutation';
+export * from './useUpdatePlanMutation';

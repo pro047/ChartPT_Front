@@ -22,6 +22,6 @@ export const useEvaluationTarget = ({
     queryFn: () =>
       getEvaluationByPateintIdAndEvaluationNumber(patientId, evaluationNumber),
     staleTime: 1000 * 60 * 5,
-    enabled: patientId != null && evaluationNumber !== null,
+    enabled: patientId != null && evaluationNumber != null,
   });
 };

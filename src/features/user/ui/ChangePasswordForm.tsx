@@ -27,6 +27,7 @@ export const ChangePasswordForm = () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: ChangePasswordSchema) => {
+    console.log('password data:', data);
     setLoading(true);
 
     try {

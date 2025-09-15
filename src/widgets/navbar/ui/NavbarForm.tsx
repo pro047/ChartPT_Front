@@ -1,13 +1,15 @@
 'use client';
 
-import { GiHamburgerMenu } from 'react-icons/gi';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { GiHamburgerMenu } from 'react-icons/gi';
 import { SidebarForm } from '@/widgets/';
 import { usePatientContext } from '@/entities';
 import { useUserStore } from '@/shared';
 import { MoreDropdown } from '@/features';
 import { Button } from '@/components/ui/button';
+import logo2 from '@/assets/logo2.png';
 
 export const NavBarForm = () => {
   const { token } = useUserStore();
@@ -18,16 +20,20 @@ export const NavBarForm = () => {
   const isPatientPage = pathName.startsWith('/patient');
 
   return (
-    <header className='items-center justify-center px-6 border-b bg-white dark:bg-black'>
+    <header className='items-center justify-center px-6 border-b bg-white dark:bg-background'>
       <div className='flex items-center justify-center gap-3'>
         <div className='flex justify-center items-center w-10'>
-          <Button
-            variant='ghost'
-            onClick={isPatientPage ? () => setIsOpen(true) : undefined}
-            className={isPatientPage ? '' : 'invisible'}
-          >
-            <GiHamburgerMenu />
-          </Button>
+          {isPatientPage ? (
+            <Button
+              variant='ghost'
+              onClick={isPatientPage ? () => setIsOpen(true) : undefined}
+            >
+              <GiHamburgerMenu />
+            </Button>
+          ) : (
+            <Image src={logo2} alt='Logo' width={40} height={36} />
+          )}
+
           {isOpen && (
             <>
               <div

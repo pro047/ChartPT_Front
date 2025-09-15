@@ -96,7 +96,7 @@ export const TodoForm = () => {
               </p>
             </div>
           ) : (
-            <>
+            <div>
               {[
                 ...serverTodos.map((todo) => ({ ...todo, confirm: true })),
                 ...localTodos,
@@ -104,11 +104,13 @@ export const TodoForm = () => {
                 return (
                   <li key={todo.id}>
                     {todo.confirm ? (
-                      <div className='flex items-center justify-between gap-3 font-semibold'>
-                        <div className='text-base'>{todo.content}</div>
-                        <Button onClick={() => onDeleteServer(todo.id)}>
-                          삭제
-                        </Button>
+                      <div className='my-2'>
+                        <div className='flex gap-3 justify-between items-center font-semibold'>
+                          <div className='text-base'>{todo.content}</div>
+                          <Button onClick={() => onDeleteServer(todo.id)}>
+                            삭제
+                          </Button>
+                        </div>
                       </div>
                     ) : (
                       <div className='flex flex-row gap-3 '>
@@ -132,7 +134,7 @@ export const TodoForm = () => {
                   </li>
                 );
               })}
-            </>
+            </div>
           )}
         </ol>
       </div>

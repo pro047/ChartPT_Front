@@ -1,16 +1,16 @@
 'use client';
 
-import { PlanType } from '@/entities';
+import { useState } from 'react';
 import { useCreatePlan } from '../hooks';
 import { PlanForm } from './PlanForm';
-import { useState } from 'react';
+import { PlanCreateType } from '@/shared';
 
 export const PlanCreateForm = () => {
   const { mutate } = useCreatePlan();
 
   const [openSuccessDialog, setOpenSuccessDialogAction] = useState(false);
 
-  const onCreateSubmit = async (formData: PlanType) => {
+  const onCreateSubmit = async (formData: PlanCreateType) => {
     mutate(
       { data: formData },
       {
@@ -25,9 +25,11 @@ export const PlanCreateForm = () => {
     );
   };
 
+  console.log('plan create form:', onCreateSubmit);
+
   return (
     <PlanForm
-      onSubmitAction={onCreateSubmit}
+      onCreateSubmitAction={onCreateSubmit}
       openSuccessDialog={openSuccessDialog}
       setOpenSuccessDialogAction={setOpenSuccessDialogAction}
     />

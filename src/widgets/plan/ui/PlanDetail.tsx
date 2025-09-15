@@ -12,10 +12,17 @@ import {
   usePlanStore,
 } from '@/shared';
 import { PatientInfoSection, PlanInfoSection } from '@/entities';
-import { PlanCreateForm, PlanUpdateForm, deletePlan } from '@/features';
+import {
+  PlanCreateForm,
+  PlanUpdateForm,
+  deletePlan,
+  usePlanContext,
+} from '@/features';
 
 export const PlanDetailWidget = () => {
   const [openDelete, setOpenDeleteAction] = useState(false);
+
+  const { mode } = usePlanContext();
 
   const hydrated = useHydrated();
   const patientId = usePatientStore((state) => state.patientId);
@@ -41,17 +48,12 @@ export const PlanDetailWidget = () => {
         {patients?.name} 님의 {planNumber} 회차 계획 기록입니다
       </div>
       <div className='grid grid-cols-2 gap-4 items-stretch'>
-        <PatientInfoSection patientId={patientId} />
+        <PatientInfoSection />
         <PlanInfoSection
           onClickDeleteAction={() => setOpenDeleteAction(true)}
         />
-        <PlanCreateForm />
-        <PlanUpdateForm
-          params={{
-            patientId: String(patientId),
-            planNumber: String(planNumber),
-          }}
-        />
+        {mode === 'create' ? <PlanCreateForm /> : <PlanUpdateForm />}
+
         <ConfirmDialog
           open={openDelete}
           title='계획 삭제'

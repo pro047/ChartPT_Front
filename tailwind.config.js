@@ -2,7 +2,6 @@ const { DEFAULT_CIPHERS } = require('tls');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -31,6 +30,7 @@ module.exports = {
           foreground: 'hsl(0 0% 100%)',
         },
       },
+      darkMode: 'class',
       borderRadius: {
         lg: '0.05rem',
         md: '0.375rem',
