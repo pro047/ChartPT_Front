@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 const isProduction = process.env.NEXT_PUBLIC_APP_ENV === 'production';
 
 const requireString = (name: string): string => {
