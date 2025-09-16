@@ -27,6 +27,7 @@
     "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
+    "dotenv": "^17.2.2",
     "framer-motion": "^12.23.0",
     "geist": "^1.4.2",
     "heroicons": "^2.2.0",

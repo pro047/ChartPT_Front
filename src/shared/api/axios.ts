@@ -1,8 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
 import * as csrfToken from '@/shared';
 import { useUserStore } from '../store/userStore';
+import { AppConifg } from '@/appConfig';
 
-const Url = process.env.NEXT_PUBLIC_API_URL;
+const Url = AppConifg.apiUrl;
 
 export const Instance: AxiosInstance = axios.create({
   baseURL: Url,
@@ -20,7 +21,6 @@ Instance.interceptors.request.use(
     console.log('[Interceptor] 요청 url :', config.url);
 
     const publicUrls = [
-      '/',
       '/auth/login',
       '/auth/signup',
       '/forgot-password',
