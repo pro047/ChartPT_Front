@@ -1,6 +1,5 @@
 import {
   EvaluationCreateWithEvaluationNumberType,
-  useEvaluationStore,
   usePatientStore,
 } from '@/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -15,11 +14,8 @@ export const useCreateEvaluationTargetMutation = () => {
   const queryClient = useQueryClient();
 
   const patientId = usePatientStore((state) => state.patientId);
-  const evaluationNumber = useEvaluationStore(
-    (state) => state.evaluationNumber
-  );
 
-  if (!patientId || !evaluationNumber)
+  if (!patientId)
     throw new Error(
       '[useCreateTargetMutation] Invalid patientId, evaluationNumber'
     );
@@ -28,13 +24,16 @@ export const useCreateEvaluationTargetMutation = () => {
     mutationFn: ({ data }: CreateEvaluationTarget) => {
       return saveEvaluationTarget({
         patientId,
-        evaluationNumber,
+        evaluationNumber: data.evaluationNumber,
         saveData: data,
       });
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: targetEvaluationQueryKey.detail(patientId, evaluationNumber),
+        queryKey: targetEvaluationQueryKey.detail(
+          patientId,
+          variables.data.evaluationNumber
+        ),
       });
     },
   });

@@ -26,13 +26,11 @@ export const EvaluationCreateForm = () => {
     (state) => state.evaluationNumber
   );
 
-  if (!patientId || !evaluationNumber) {
+  if (!patientId) {
     throw new Error(
       'PatientId, evaluatioNumber not found : EvaluationCreateForm'
     );
   }
-
-  console.log('mode', mode);
 
   const onCreateSubmit = async (formData: FlatEvaluationCreateFormType) => {
     const filterdData = formData.fields.filter(
@@ -54,7 +52,10 @@ export const EvaluationCreateForm = () => {
         break;
       }
       case 'addTarget': {
-        console.log('addTarget called');
+        if (!evaluationNumber) {
+          console.warn('Not found eval Number');
+          return;
+        }
 
         const payload = toEvaluationTargetPayload({
           patientId,
