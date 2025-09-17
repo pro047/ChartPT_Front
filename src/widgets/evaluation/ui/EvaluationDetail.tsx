@@ -29,14 +29,17 @@ export const EvaluationDetailWidget = () => {
 
   const { mutate } = useDeleteEvaluationTarget();
 
-  if (!hydrated || !patientId || !evaluationNumber || !evaluationTargetId) {
-    console.warn(
-      `${hydrated} / ${patientId} / ${evaluationNumber} / ${evaluationTargetId}`
-    );
+  if (!hydrated || !patientId || !evaluationNumber) {
+    console.warn(`${hydrated} / ${patientId} / ${evaluationNumber}`);
     return;
   }
 
   const handleDelete = async () => {
+    if (!evaluationTargetId) {
+      console.warn('Not found evaluation target id');
+      return;
+    }
+
     mutate(
       { patientId, evaluationNumber, evaluationTargetId },
       {

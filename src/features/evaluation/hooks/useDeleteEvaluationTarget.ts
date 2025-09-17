@@ -19,9 +19,9 @@ export const useDeleteEvaluationTarget = () => {
       evaluationNumber: number;
       evaluationTargetId: number;
     }) => {
-      if (!patientId || !evaluationNumber || !evaluationTargetId)
+      if (!patientId || !evaluationNumber)
         throw new Error(
-          `Invalid patientId : ${patientId}, evalautioNumber : ${evaluationNumber}, evaluationTargetId : ${evaluationTargetId} at useDeleteEvaluationTarget`
+          `Invalid patientId : ${patientId}, evalautioNumber : ${evaluationNumber} at useDeleteEvaluationTarget`
         );
 
       return deleteEvaluationTarget({
