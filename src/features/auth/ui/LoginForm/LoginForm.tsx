@@ -130,7 +130,7 @@ export const LoginForm = () => {
                 로그인
               </Button>
               <Button asChild variant='outline' className='w-full'>
-                <Link href='/forgot-password'>비밀번호 찾기</Link>
+                <Link href='/forgot-account'>계정 찾기</Link>
               </Button>
             </form>
           </Form>
