@@ -29,8 +29,12 @@ export const EvaluationDetailWidget = () => {
 
   const { mutate } = useDeleteEvaluationTarget();
 
-  if (!hydrated || !patientId || !evaluationNumber || !evaluationTargetId)
-    return null;
+  if (!hydrated || !patientId || !evaluationNumber || !evaluationTargetId) {
+    console.warn(
+      `${hydrated} / ${patientId} / ${evaluationNumber} / ${evaluationTargetId}`
+    );
+    return;
+  }
 
   const handleDelete = async () => {
     mutate(
