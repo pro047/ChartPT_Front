@@ -51,6 +51,16 @@ Instance.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       console.warn('[response interceptor] 401 발생 -> 로그아웃 처리');
+      const rid = error?.response?.headers?.['x-request-id'] ?? 'unknown';
+      console.error({
+        requestsId: rid,
+        url: error?.config?.url,
+        method: error?.config?.method,
+        status: error?.response?.status,
+        responseBody: error?.response?.data,
+        requestheaders: error?.config?.headers,
+        hasCookieHeader: Boolean(error?.config?.headers?.Cookie),
+      });
 
       useUserStore.getState().clearUser();
 
