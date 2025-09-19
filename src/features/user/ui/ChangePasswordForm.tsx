@@ -13,6 +13,7 @@ import {
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export const ChangePasswordForm = () => {
   const form = useForm<ChangePasswordSchema>({
@@ -26,6 +27,8 @@ export const ChangePasswordForm = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const router = useRouter();
+
   const onSubmit = async (data: ChangePasswordSchema) => {
     console.log('password data:', data);
     setLoading(true);
@@ -33,6 +36,7 @@ export const ChangePasswordForm = () => {
     try {
       await changePassword(data.currentPassword, data.newPassword);
       toast.success('비밀번호 변경에 성공했습니다');
+      router.back();
     } catch (err) {
       toast.error('비밀번호 변경에 실패했습니다');
     } finally {
@@ -51,30 +55,31 @@ export const ChangePasswordForm = () => {
       </CardHeader>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}></form>
-        <div className='flex flex-col space-y-5 px-6 tracking-wide'>
-          <ChangePasswordField
-            control={form.control}
-            name='currentPassword'
-            label='현재 비밀번호'
-            placeholder='현재 비밀번호'
-          />
-          <ChangePasswordField
-            control={form.control}
-            name='newPassword'
-            label='새 비밀번호'
-            placeholder='새 비밀번호'
-          />
-          <ChangePasswordField
-            control={form.control}
-            name='newPasswordCheck'
-            label='비밀번호 확인'
-            placeholder='비밀번호 확인'
-          />
-          <Button type='submit' className='mt-5'>
-            비밀번호 변경
-          </Button>
-        </div>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className='flex flex-col space-y-5 px-6 tracking-wide'>
+            <ChangePasswordField
+              control={form.control}
+              name='currentPassword'
+              label='현재 비밀번호'
+              placeholder='현재 비밀번호'
+            />
+            <ChangePasswordField
+              control={form.control}
+              name='newPassword'
+              label='새 비밀번호'
+              placeholder='새 비밀번호'
+            />
+            <ChangePasswordField
+              control={form.control}
+              name='newPasswordCheck'
+              label='비밀번호 확인'
+              placeholder='비밀번호 확인'
+            />
+            <Button type='submit' className='mt-5'>
+              비밀번호 변경
+            </Button>
+          </div>
+        </form>
       </Form>
     </Card>
   );
