@@ -92,11 +92,17 @@ export const CascadingSelector = ({
             />
           </SelectTrigger>
           <SelectContent>
-            {options.regions.map((o) => (
-              <SelectItem key={o.id} value={String(o.id)}>
-                {o.label}
+            {options.regions.length === 0 ? (
+              <SelectItem className='text-muted-foreground' value='No_data'>
+                평가 기록이 없습니다
               </SelectItem>
-            ))}
+            ) : (
+              options.regions.map((o) => (
+                <SelectItem key={o.id} value={String(o.id)}>
+                  {o.label}
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
       </div>

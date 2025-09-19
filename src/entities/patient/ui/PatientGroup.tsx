@@ -28,7 +28,7 @@ export const PatientGroup = ({
     <div className='mb-2'>
       <button
         onClick={onToggleAction}
-        className='flex justify-between items-center w-full text-bg-popover-foreground '
+        className='flex justify-between items-center w-full text-bg-popover-foreground'
       >
         <div>{initial}</div>
         {isOpen ? <BiChevronUp /> : <BiChevronDown />}
@@ -41,6 +41,7 @@ export const PatientGroup = ({
         {patients?.map((patient) => (
           <li className='pl-4 mb-2' key={patient.id}>
             <button
+              className='cursor-pointer text-muted-foreground hover:text-accent-foreground'
               onClick={() => {
                 handleClickPatient(patient);
               }}
