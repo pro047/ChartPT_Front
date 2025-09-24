@@ -4,7 +4,12 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { login } from '../../api/auth';
-import { useUserStore, UserStore, Divider } from '@/shared';
+import {
+  useUserStore,
+  UserStore,
+  Divider,
+  useAccessTokenStore,
+} from '@/shared';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,6 +43,7 @@ export const LoginForm = () => {
   });
 
   const setUser = useUserStore((state: UserStore) => state.setUser);
+  const setToken = useAccessTokenStore((state) => state.setAccessToken);
   const router = useRouter();
 
   const onSubmit = async (data: LoginSchema) => {
@@ -49,15 +55,16 @@ export const LoginForm = () => {
     try {
       const user = await login(data.email, data.password);
 
-      const { userId, token, name, email, hospital } = user;
+      const { userId, accessToken, name, email, hospital } = user;
 
-      if (!userId || !token) {
+      if (!userId) {
         throw new Error('유효하지 않은 로그인 응답입니다');
       }
-      console.log('[login] 받은 토큰 :', token);
       console.log('[thera] 이름 :', name);
+      console.log('[로그인결과] :', userId, email, hospital, name, accessToken);
+
       setUser(user);
-      console.log('[로그인결과] :', userId, email, hospital, token, name);
+      setToken(accessToken);
 
       router.push('/dashboard');
     } catch (err: any) {

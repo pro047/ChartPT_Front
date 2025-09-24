@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import * as csrfToken from '@/shared';
-import { useUserStore } from '../store/userStore';
 import { AppConifg } from '@/appConfig';
+import { getAccessToken, getEmail, useAccessTokenStore } from '@/shared';
 
 const Url = AppConifg.apiUrl;
 
@@ -13,10 +13,20 @@ export const Instance: AxiosInstance = axios.create({
   },
 });
 
+const refreshClient: AxiosInstance = axios.create({
+  baseURL: Url,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 Instance.interceptors.request.use(
   async (config) => {
-    const { url = '', method = 'get' } = config;
-    const user = useUserStore.getState();
+    const { url = '' } = config;
+
+    const accessToken = getAccessToken();
+    console.log('accessToken :', accessToken);
 
     console.log('[Interceptor] 요청 url :', config.url);
 
@@ -26,18 +36,15 @@ Instance.interceptors.request.use(
       '/forgot-password',
       '/reset-password',
     ];
+
     const isPublic = publicUrls.some((path) => url.includes(path));
-
-    if (method.toLowerCase() === 'get') {
-      return config;
-    }
-
     const csrf = await csrfToken.getCsrfToken();
     config.headers['Chartpt-Csrf-Token'] = csrf;
 
-    if (!isPublic && user?.token) {
-      config.headers['Authorization'] = `Bearer ${user.token}`;
+    if (!isPublic && accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
+    console.log('config ', config);
 
     return config;
   },
@@ -46,26 +53,68 @@ Instance.interceptors.request.use(
   }
 );
 
+let isRefreshing = false;
+let waitingResolvers: Array<(token: string | null) => void> = [];
+
+function notifyWaitingRequests(token: string | null) {
+  waitingResolvers.forEach((resolve) => {
+    resolve(token);
+  });
+  waitingResolvers = [];
+}
+
 Instance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error) => {
-    if (error.response?.status === 401) {
-      console.warn('[response interceptor] 401 발생 -> 로그아웃 처리');
-      const rid = error?.response?.headers?.['x-request-id'] ?? 'unknown';
-      console.error({
-        requestsId: rid,
-        url: error?.config?.url,
-        method: error?.config?.method,
-        status: error?.response?.status,
-        responseBody: error?.response?.data,
-        requestheaders: error?.config?.headers,
-        hasCookieHeader: Boolean(error?.config?.headers?.Cookie),
-      });
+    const original = error.config;
+    const statusCode = error?.response?.status;
+    const isRefreshCall = error?.config?.url.includes('/auth/refresh');
+    const accToken = useAccessTokenStore.getState().accessToken;
 
-      useUserStore.getState().clearUser();
-
-      return Promise.reject(error);
+    if (statusCode !== 401 || isRefreshCall || original._retry) {
+      throw error;
     }
-    return Promise.reject(error);
+
+    original._retry = true;
+
+    if (!isRefreshing) {
+      isRefreshing = true;
+
+      try {
+        const csrf = await csrfToken.getCsrfToken();
+        const email = getEmail();
+        const response = await refreshClient.post(
+          '/auth/refresh',
+          { email },
+          {
+            headers: { 'Chartpt-Csrf-Token': csrf },
+          }
+        );
+        const newAccessToken = response.data?.accessToken as string | undefined;
+        if (!newAccessToken) throw new Error('missing accessToken');
+        useAccessTokenStore.getState().setAccessToken(newAccessToken);
+
+        notifyWaitingRequests(newAccessToken);
+      } catch (err) {
+        notifyWaitingRequests(null);
+        throw err;
+      } finally {
+        isRefreshing = false;
+      }
+    } else {
+      await new Promise<string | null>((resolve) =>
+        waitingResolvers.push(resolve)
+      );
+    }
+
+    if (accToken) {
+      original.headers = {
+        ...(original.headers || {}),
+        Authorization: `Bearer ${accToken}`,
+      };
+    }
+    return Instance(original);
   }
 );

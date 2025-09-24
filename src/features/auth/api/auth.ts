@@ -1,5 +1,5 @@
 import { Instance, useUserStore } from '@/shared';
-import { LoginResponse, LoginRequest } from '@/shared';
+import { LoginResponse } from '@/shared';
 
 export const SignUp = async (
   email: string,
@@ -46,12 +46,12 @@ export const logout = async (): Promise<void> => {
   clearUser();
 };
 
-export const me = async (): Promise<LoginRequest> => {
-  const token = useUserStore.getState().token;
-  const result = await Instance.get('/auth/me', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return result.data;
-};
+// export const me = async (): Promise<LoginRequest> => {
+//   const accessToken = useAccessTokenStore((state) => state.accessToken);
+//   const result = await Instance.get('/auth/me', {
+//     headers: { Authorization: `Bearer ${accessToken}` },
+//   });
+//   return result.data;
+// };
 
 // todo error check

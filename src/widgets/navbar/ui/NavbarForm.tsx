@@ -6,13 +6,13 @@ import { usePathname } from 'next/navigation';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { SidebarForm } from '@/widgets/';
 import { usePatientContext } from '@/entities';
-import { useUserStore } from '@/shared';
+import { useAccessTokenStore } from '@/shared';
 import { MoreDropdown } from '@/features';
 import { Button } from '@/components/ui/button';
 import logo2 from '@/assets/logo2.png';
 
 export const NavBarForm = () => {
-  const { token } = useUserStore();
+  const accessToken = useAccessTokenStore((state) => state.accessToken);
   const { isOpen, setIsOpen } = usePatientContext();
 
   const pathName = usePathname();
@@ -60,7 +60,7 @@ export const NavBarForm = () => {
             <Link href={'/patient'}>Patient</Link>
           </Button>
         </nav>
-        <div>{token ? <MoreDropdown /> : <Button>login</Button>}</div>
+        <div>{accessToken ? <MoreDropdown /> : <Button>login</Button>}</div>
       </div>
     </header>
   );

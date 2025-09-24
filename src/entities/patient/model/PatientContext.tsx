@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getAllPatients } from '../api';
 import { getInitialConsnant } from '../lib';
-import { PatientInfo, useUserStore } from '@/shared';
+import { PatientInfo, useAccessTokenStore } from '@/shared';
 
 type PatientContextType = {
   groupedPatients: Record<string, PatientInfo[]>;
@@ -28,11 +28,11 @@ export const PatientProvider = ({
   const [isLoading, setisLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const { token } = useUserStore();
+  const accessToken = useAccessTokenStore((state) => state.accessToken);
 
   const fetch = async () => {
     try {
-      if (!token) return;
+      if (!accessToken) return;
 
       const patients = await getAllPatients();
       console.log('patients :', patients);

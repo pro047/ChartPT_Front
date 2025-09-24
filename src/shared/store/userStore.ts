@@ -7,7 +7,6 @@ export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       userId: null,
-      token: null,
       name: null,
       email: null,
       hospital: null,
@@ -15,7 +14,6 @@ export const useUserStore = create<UserStore>()(
       clearUser: () => {
         set({
           userId: null,
-          token: null,
           name: null,
           email: null,
           hospital: null,
@@ -29,3 +27,5 @@ export const useUserStore = create<UserStore>()(
     }
   )
 );
+
+export const getEmail = () => useUserStore.getState().email;

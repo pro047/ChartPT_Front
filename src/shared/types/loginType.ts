@@ -4,12 +4,12 @@ export type LoginRequest = {
   password: string;
   name?: string;
   hospital?: string;
-  token: string;
+  accessToken: string;
 };
 
 export type LoginResponse = {
   userId: number;
-  token: string;
+  accessToken: string;
   email: string;
   name: string;
   hospital?: string;
