@@ -45,13 +45,3 @@ export const logout = async (): Promise<void> => {
   await Instance.post('/auth/logout');
   clearUser();
 };
-
-// export const me = async (): Promise<LoginRequest> => {
-//   const accessToken = useAccessTokenStore((state) => state.accessToken);
-//   const result = await Instance.get('/auth/me', {
-//     headers: { Authorization: `Bearer ${accessToken}` },
-//   });
-//   return result.data;
-// };
-
-// todo error check
