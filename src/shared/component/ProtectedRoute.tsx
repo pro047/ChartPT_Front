@@ -2,11 +2,11 @@
 
 import React, { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useUserStore } from '../store';
+import { useAccessTokenStore } from '../store';
 import { useHydrated } from '../hooks';
 
 export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const token = useUserStore((state) => state.token);
+  const accessToken = useAccessTokenStore((state) => state.accessToken);
   const pathName = usePathname();
   const hydrated = useHydrated();
   const router = useRouter();
@@ -23,10 +23,10 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!hydrated) return;
-    if (!token && !isPublicRoutes) {
+    if (!accessToken && !isPublicRoutes) {
       router.replace('/');
     }
-  }, [hydrated, token, pathName]);
+  }, [hydrated, accessToken, pathName]);
 
   if (!hydrated) return null;
 

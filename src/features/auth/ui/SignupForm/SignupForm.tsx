@@ -59,7 +59,6 @@ export const SignupForm = () => {
         data.hospital
       );
       console.log('result : ', result);
-      console.log('[signup] 받은 토큰 :', result.token);
       setUser(result);
       router.push('/');
     } catch (err: any) {
