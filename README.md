@@ -3,13 +3,6 @@
 ChartPT Frontend 레포지토리입니다
 본 프로젝트에서는 Feature-Sliced Design(FSD) 아키텍쳐를 도입해서 폴더구조를 정리했습니다
 
-src/
-├── app/
-├── entities/
-├── features/
-├── pages/
-└── shared/
-
 FSD 아키텍쳐 도입으로 아래와 같은 장점을 느꼈습니다
 
 - 코드의 의존성 감소
