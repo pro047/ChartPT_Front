@@ -11,7 +11,7 @@ export const HomeForm = () => {
       <Card className='w-full max-w-md mb-12'>
         <CardContent className='p-8 flex flex-col items-center'>
           <h1 className='text-7xl font-bold tracking-tight text-foreground mt-10 mb-20 animate-fade-in-scale'>
-            ReHab
+            ChartPT
           </h1>
           <Divider className='mb-10' />
           <div className='space-y-4 w-full max-w-xs'>
